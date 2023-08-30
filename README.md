@@ -11,7 +11,12 @@ Given schema, this package extracts all available queries, mutations, subscripti
 3.  toggle on/off single operation in check-list as you wish
 4.  generates reduced-schema by using check-list
 
-### How to Use
+### Commands
+
+For every command, you should add prefix `npx schema-filter` to execute
+To show available commands, execute `npx schema-filter --help` after installation
+
+### Getting Started
 
 1.  install package
 
@@ -66,11 +71,11 @@ Given schema, this package extracts all available queries, mutations, subscripti
 
 4.   **filter(reduce)** schema using check-list
     
-    execute below command **at project root path**
+        execute below command **at project root path**
 
-    ```
-    npx schema-filter:filter
-    ```
+        ```
+        npx schema-filter:filter
+        ```
 
 
 5. toggle on/off single operation in check-list
