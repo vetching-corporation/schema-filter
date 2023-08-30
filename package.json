@@ -1,6 +1,6 @@
 {
   "name": "schema-filter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "given schema, this package extracts all available queries, mutations, subscriptions and then make list of those to determine whether to use each graphql operation, by using that filters, reduced-schema is generated",
   "repository": {
     "type": "git",
@@ -31,12 +31,13 @@
   },
   "scripts": {
     "clean": "rimraf node_mobules build",
-    "translate": "npx tsc",
-    "build": "yarn translate",
-    "test:init": "yarn translate && node build/index.js init",
-    "test:include": "yarn translate && node build/index.js include",
-    "test:exclude": "yarn translate && node build/index.js exclude",
-    "test:filter": "yarn translate && node build/index.js filter"
+    "build": "npx tsc",
+    "cb": "yarn clean && yarn build",
+    "prepublish": "yarn cb",
+    "test:init": "yarn build && node build/index.js init",
+    "test:include": "yarn build && node build/index.js include",
+    "test:exclude": "yarn build && node build/index.js exclude",
+    "test:filter": "yarn build && node build/index.js filter"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.197",
@@ -49,7 +50,6 @@
   "dependencies": {
     "chalk": "^4.0.0",
     "commander": "^11.0.0",
-    "conf": "^11.0.2",
     "find-package-json": "^1.2.0",
     "graphql": "^16.6.0",
     "lodash": "^4.17.21",

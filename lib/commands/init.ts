@@ -45,7 +45,7 @@ const isTypeSystemDefinitionNode = (node: DefinitionNode): node is TypeSystemDef
   )
 }
 
-const loadCurrentUsage = ({ filterPath }: { filterPath: string }) => {
+const loadExistingOperationFilterMap = () => {
   const currentInUseOperationMap: Map<String, boolean> = new Map<String, boolean>()
 
   const queries: Operation[] = loadQueries()
@@ -59,7 +59,7 @@ const loadCurrentUsage = ({ filterPath }: { filterPath: string }) => {
   return currentInUseOperationMap
 }
 
-export const initializeCheckList = () => {
+export const initializeFilters = () => {
   const originalSchema = readFileSync(cofiguration['schema-original'], 'utf-8')
   const ast = parse(originalSchema)
   const outputPath = cofiguration['filters']
@@ -72,9 +72,7 @@ export const initializeCheckList = () => {
   /// and how to get actual graphql operations
   const fieldLevelLookUpTypeNames: Set<String> = new Set<String>(['Query', 'Mutation', 'Subscription'])
 
-  const isOperationInUse = loadCurrentUsage({
-    filterPath: outputPath,
-  })
+  const isOperationInUse = loadExistingOperationFilterMap()
 
   /// used to log
   const kindCounts: Map<Kind, number> = new Map<Kind, number>()

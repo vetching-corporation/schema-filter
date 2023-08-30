@@ -1,18 +1,18 @@
 #!/usr/bin/env node
 
 import { program } from 'commander'
-import { excludeOperation } from './commands/exclude-operation'
+import { excludeOperation } from './commands/exclude'
 import { filter } from './commands/filter'
-import { includeOperation } from './commands/include-operation'
-import { initializeCheckList } from './commands/initialize-check-list'
+import { includeOperation } from './commands/include'
+import { initializeFilters } from './commands/init'
 import { getConfiguration } from './utilities/caller-configuration-parser'
 
 getConfiguration()
 
 program //
   .command('init')
-  .description('generate or update check-list')
-  .action(initializeCheckList)
+  .description('generate or update filters')
+  .action(initializeFilters)
 
 program //
   .command('include <operationName>')
@@ -26,7 +26,7 @@ program //
 
 program //
   .command('filter')
-  .description('filter operation from schema using check-list')
+  .description('filter operation from schema using filters')
   .action(filter)
 
 program.parse()

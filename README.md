@@ -218,7 +218,7 @@ npx schema-filter --help
 ### How to Build
 
 ``` shell
-yarn build
+yarn cb # clean build
 ```
 
 # Further Requirements?
