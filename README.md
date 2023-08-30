@@ -35,7 +35,7 @@ To show available commands, execute `npx schema-filter --help` after installatio
        
        // give "directory" path to store check-list as you wish
        // you may omit 
-       "filter-list":"lib/src/schema-filters/",
+       "filters":"lib/src/schema-filters/",
        
        // give "file" path to store reduced-schema as you wish
        "schema-reduced":"lib/src/gql/schema-reduced.graphql",
@@ -46,11 +46,11 @@ To show available commands, execute `npx schema-filter --help` after installatio
 
       If not given, it won't work.
 
-    - `filter-list` field is **optional**.
+    - `filters` field is **optional**.
       If not given, generated check-list files' path are determined by `original-schema`'s path
 
       - directory will be same with `original-schema`'s directory
-      - directory name will be `schema-filters`
+      - directory name will be `filters`
       - `Query.json`, `Mutation.json`, `Subscription.json` will be generated under `schema-filters` directory
       
 
@@ -99,6 +99,28 @@ To show available commands, execute `npx schema-filter --help` after installatio
     ``` bash
     npx schema-filter filter
     ```
+## Contributions
+
+### How to Test Locally
+
+1. install changed package locally
+
+    ``` shell
+    npm i --globally
+    ```
+
+2. execute commands wherever
+
+    ``` shell
+    npx schema-filter intiailize
+    npx schema-filter filter
+    ```
+
+### How to Build
+
+``` shell
+yarn build
+```
 
 ## Further Requirements?
 

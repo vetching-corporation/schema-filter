@@ -1,19 +1,31 @@
-#! /usr/bin/env node
+#!/usr/bin/env node
 
 import { program } from 'commander'
-// import { list } from './commands/list'
+import { excludeOperation } from './commands/exclude-operation'
+import { includeOperation } from './commands/include-operation'
+import { initializeCheckList } from './commands/initialize-check-list'
+import { getConfiguration } from './utilities/caller-configuration-parser'
 
-program.option('--first').option('-s, --separator <char>')
+getConfiguration()
 
-program.parse()
+program //
+  .command('init')
+  .description('generate or update check-list')
+  .action(initializeCheckList)
 
-const options = program.opts()
-const limit = options.first ? 1 : undefined
-console.log(program.args[0].split(options.separator, limit))
+program //
+  .command('include <operationName>')
+  .description('include operation to schema')
+  .action(includeOperation)
+
+program //
+  .command('exclude <operationName>')
+  .description('exclude operation from schema')
+  .action(excludeOperation)
 
 // program //
-//   .command('list')
-//   .description('List all the TODO tasks')
-//   .action(list)
+//   .command('filter')
+//   .description('filter operation from schema using check-list')
+//   .action(filter)
 
-// program.parse()
+program.parse()
