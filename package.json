@@ -24,6 +24,8 @@
   "scripts": {
     "clean": "npx tsc --build --clean",
     "translate": "npx tsc",
+    "example:ts": "npx lib/index.ts",
+    "example": "yarn translate && node build/index.js",
     "update": "yarn run introspect && yarn run filter && yarn run generate",
     "initialize-check-list": "npx ts-node gql/utilities/look-up.ts",
     "on": "npx ts-node gql/editor.ts on && yarn filter",
