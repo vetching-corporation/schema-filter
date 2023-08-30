@@ -1,6 +1,6 @@
 {
   "name": "schema-filter",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "given schema, this package extracts all available queries, mutations, subscriptions and then make list of those to determine whether to use each graphql operation, by using that filters, reduced-schema is generated",
   "repository": {
     "type": "git",
@@ -33,7 +33,7 @@
     "clean": "rimraf node_mobules build",
     "build": "npx tsc",
     "cb": "yarn clean && yarn build",
-    "prepublish": "yarn cb",
+    "publish": "yarn cb && npm publish",
     "test:init": "yarn build && node build/index.js init",
     "test:include": "yarn build && node build/index.js include",
     "test:exclude": "yarn build && node build/index.js exclude",
