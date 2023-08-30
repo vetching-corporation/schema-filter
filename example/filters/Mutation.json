@@ -1,0 +1,14 @@
+[
+  {
+    "inUse": true,
+    "name": "createPost"
+  },
+  {
+    "inUse": false,
+    "name": "updatePost"
+  },
+  {
+    "inUse": true,
+    "name": "deletePost"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "inUse": true,
+    "name": "getPost"
+  },
+  {
+    "inUse": false,
+    "name": "getAllPosts"
+  }
+]

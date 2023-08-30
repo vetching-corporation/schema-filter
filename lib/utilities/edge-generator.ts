@@ -1,6 +1,5 @@
 import { DocumentNode, FieldDefinitionNode, InputValueDefinitionNode, Kind, TypeNode } from 'graphql'
 import { compact } from 'lodash'
-import { SchemaNode } from './node-initializer'
 
 const getName = (type: TypeNode): String => {
   switch (type.kind) {
@@ -93,20 +92,14 @@ const getFieldDefinitionNodeInputRelatedTypeNames = (
 export const generateEdges = ({
   ast,
   schemaNodeIdByName,
-  schemaNodeById,
 }: {
   ast: DocumentNode
   schemaNodeIdByName: Map<String, number>
-  schemaNodeById: Map<number, SchemaNode>
 }) => {
   const edges: Map<number, Set<number>> = new Map<number, Set<number>>()
   const definitionNodes = ast.definitions
   for (let index = 0; index < definitionNodes.length; index++) {
-    const definitionNode = definitionNodes.at(index)
-    if (!definitionNode) {
-      console.error('definition node not found')
-      process.exit()
-    }
+    const definitionNode = definitionNodes[index]
 
     if (
       !(
@@ -162,6 +155,7 @@ export const generateEdges = ({
       }
     }
   }
+
   console.log('generated edges')
   return edges
 }

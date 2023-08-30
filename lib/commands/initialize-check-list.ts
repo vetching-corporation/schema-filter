@@ -14,6 +14,7 @@ import { assert } from 'console'
 import { lowerCase } from 'lodash'
 import { Operation } from '../types/operation'
 import { cofiguration } from '../utilities/caller-configuration-parser'
+import { loadMutations, loadQueries, loadSubscriptions } from '../utilities/operation-loader'
 
 const isTypeSystemExtensionNode = (node: DefinitionNode): node is TypeSystemExtensionNode => {
   return (
@@ -47,15 +48,9 @@ const isTypeSystemDefinitionNode = (node: DefinitionNode): node is TypeSystemDef
 const loadCurrentUsage = ({ filterPath }: { filterPath: string }) => {
   const currentInUseOperationMap: Map<String, boolean> = new Map<String, boolean>()
 
-  const queryPath = path.join(filterPath, 'Query.json')
-  const mutationPath = path.join(filterPath, 'Mutation.json')
-  const subscriptionPath = path.join(filterPath, 'Subscription.json')
-
-  const queries: Operation[] = existsSync(queryPath) ? JSON.parse(readFileSync(queryPath, 'utf-8')) : []
-  const mutations: Operation[] = existsSync(mutationPath) ? JSON.parse(readFileSync(mutationPath, 'utf-8')) : []
-  const subscriptions: Operation[] = existsSync(subscriptionPath)
-    ? JSON.parse(readFileSync(subscriptionPath, 'utf-8'))
-    : []
+  const queries: Operation[] = loadQueries()
+  const mutations: Operation[] = loadMutations()
+  const subscriptions: Operation[] = loadSubscriptions()
 
   const operations = [...queries, ...mutations, ...subscriptions]
 

@@ -1,0 +1,14 @@
+[
+  {
+    "inUse": false,
+    "name": "postCreated"
+  },
+  {
+    "inUse": false,
+    "name": "postUpdated"
+  },
+  {
+    "inUse": true,
+    "name": "postDeleted"
+  }
+]

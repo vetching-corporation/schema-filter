@@ -1,7 +1,7 @@
 {
   "name": "schema-filter",
-  "version": "0.0.1",
-  "description": "given schema, this package extracts all available queries, mutations, subscriptions and then make list of those to determine whether to use each graphql operation, by using that check-list, reduced-schema is generated",
+  "version": "1.0.0",
+  "description": "given schema, this package extracts all available queries, mutations, subscriptions and then make list of those to determine whether to use each graphql operation, by using that filters, reduced-schema is generated",
   "repository": {
     "type": "git",
     "url": "https://github.com/vetching-corporation/schema-filter.git"
@@ -33,15 +33,10 @@
     "clean": "rimraf node_mobules build",
     "translate": "npx tsc",
     "build": "yarn translate",
-    "test-using-example:init": "yarn translate && node build/index.js init",
-    "test-using-example:include": "yarn translate && node build/index.js include",
-    "test-using-example:exclude": "yarn translate && node build/index.js exclude",
-    "test-using-example:filter": "yarn translate && node build/index.js filter",
-    "update": "yarn run introspect && yarn run filter && yarn run generate",
-    "initialize-check-list": "npx ts-node gql/utilities/look-up.ts",
-    "on": "npx ts-node gql/editor.ts on && yarn filter",
-    "off": "npx ts-node gql/editor.ts off && yarn filter",
-    "filter": "npx ts-node gql/index.ts && wc -l gql/schema-original.graphql && wc -l gql/schema-operation-filtered.graphql && wc -l gql/schema-filtered.graphql"
+    "test:init": "yarn translate && node build/index.js init",
+    "test:include": "yarn translate && node build/index.js include",
+    "test:exclude": "yarn translate && node build/index.js exclude",
+    "test:filter": "yarn translate && node build/index.js filter"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.197",

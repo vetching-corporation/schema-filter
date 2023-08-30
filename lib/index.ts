@@ -2,6 +2,7 @@
 
 import { program } from 'commander'
 import { excludeOperation } from './commands/exclude-operation'
+import { filter } from './commands/filter'
 import { includeOperation } from './commands/include-operation'
 import { initializeCheckList } from './commands/initialize-check-list'
 import { getConfiguration } from './utilities/caller-configuration-parser'
@@ -23,9 +24,9 @@ program //
   .description('exclude operation from schema')
   .action(excludeOperation)
 
-// program //
-//   .command('filter')
-//   .description('filter operation from schema using check-list')
-//   .action(filter)
+program //
+  .command('filter')
+  .description('filter operation from schema using check-list')
+  .action(filter)
 
 program.parse()

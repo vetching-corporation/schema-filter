@@ -1,42 +1,35 @@
-import { DocumentNode, Kind } from "graphql";
+import { DocumentNode, Kind } from 'graphql'
 
 export type SchemaNode = {
-  id: number;
-  name: string;
-};
+  id: number
+  name: string
+}
 
+/// Traverse AST and generate nodes
+/// filtered AST is usually given and used to generate nodes
 export const generateNodes = (
-  ast: DocumentNode
+  ast: DocumentNode,
 ): {
-  schemaNodeById: Map<number, SchemaNode>;
-  schemaNodeIdByName: Map<String, number>;
+  schemaNodeById: Map<number, SchemaNode>
+  schemaNodeIdByName: Map<String, number>
 } => {
   /* -------------------------------------------------------------------------- */
   /*                                   Utility                                  */
   /* -------------------------------------------------------------------------- */
-  const kindCounts: Map<Kind, number> = new Map<Kind, number>();
+  const kindCounts: Map<Kind, number> = new Map<Kind, number>()
 
   /* -------------------------------------------------------------------------- */
   /*                                Main Purpose                                */
   /* -------------------------------------------------------------------------- */
 
-  const schemaNodeById: Map<number, SchemaNode> = new Map<number, SchemaNode>();
-  const schemaNodeIdByName: Map<String, number> = new Map<String, number>();
+  const schemaNodeById: Map<number, SchemaNode> = new Map<number, SchemaNode>()
+  const schemaNodeIdByName: Map<String, number> = new Map<String, number>()
 
-  const definitionNodes = ast.definitions;
+  const definitionNodes = ast.definitions
   for (let index = 0; index < definitionNodes.length; index++) {
-    const definitionNode = definitionNodes.at(index);
+    const definitionNode = definitionNodes[index]
 
-    if (!definitionNode) {
-      console.error("definitionNode not found");
-
-      process.exit();
-    }
-
-    kindCounts.set(
-      definitionNode.kind,
-      (kindCounts.get(definitionNode.kind) ?? 0) + 1
-    );
+    kindCounts.set(definitionNode.kind, (kindCounts.get(definitionNode.kind) ?? 0) + 1)
 
     if (
       !(
@@ -47,36 +40,36 @@ export const generateNodes = (
         definitionNode.kind === Kind.ENUM_TYPE_DEFINITION
       )
     ) {
-      console.log("another definitionNode type detected");
+      console.log('another definitionNode type detected')
 
-      continue;
+      continue
     }
 
-    const id = index + 1;
-    const name = definitionNode.name.value;
+    const id = index + 1
+    const name = definitionNode.name.value
 
     schemaNodeById.set(id, {
       id,
       name,
-    });
+    })
 
-    schemaNodeIdByName.set(name, id);
+    schemaNodeIdByName.set(name, id)
   }
 
-  logCountsBykind(kindCounts);
+  logCountsBykind(kindCounts)
 
-  console.log("generated nodes");
+  console.log('generated nodes')
 
   return {
     schemaNodeById,
     schemaNodeIdByName,
-  };
-};
+  }
+}
 
 const logCountsBykind = (kindCounts: Map<Kind, number>) => {
-  console.log();
+  console.log()
 
   for (let [key, value] of kindCounts) {
-    console.log(key + " = " + value);
+    console.log(key + ' = ' + value)
   }
-};
+}
