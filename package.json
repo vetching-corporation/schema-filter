@@ -31,6 +31,7 @@
     "filter": "npx ts-node gql/index.ts && wc -l gql/schema-original.graphql && wc -l gql/schema-operation-filtered.graphql && wc -l gql/schema-filtered.graphql"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.197",
     "@types/node": "^18.0.0",
     "prettier": "2.3.2",
     "ts-node": "^10.9.1",
