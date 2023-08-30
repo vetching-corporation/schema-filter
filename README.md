@@ -96,8 +96,8 @@ npx schema-filter --help
 1.  Install package (one of below command)
 
     ```shell
-    yarn add schema-filter
-    # npm i schema-filter
+    yarn add --dev schema-filter
+    # npm i --save schema-filter
     ```
 
 2. Add/Adjust below configuration in your package.json
@@ -203,16 +203,16 @@ npx schema-filter --help
 1. clone this repository
 
     ``` shell
-    git clone
+    git clone https://github.com/vetching-corporation/schema-filter.git
     ```
 
 1. check below commands in package.json
 
     ``` shell
-    "test:init": "yarn translate && node build/index.js init",
-    "test:include": "yarn translate && node build/index.js include",
-    "test:exclude": "yarn translate && node build/index.js exclude",
-    "test:filter": "yarn translate && node build/index.js filter"
+    "test:init": "yarn build && node build/index.js init",
+    "test:include": "yarn build && node build/index.js include",
+    "test:exclude": "yarn build && node build/index.js exclude",
+    "test:filter": "yarn build && node build/index.js filter"
     ```
 
 ### How to Build
