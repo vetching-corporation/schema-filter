@@ -22,7 +22,8 @@
     "todos": "./index.ts"
   },
   "scripts": {
-    "type": "npx tsc",
+    "clean": "npx tsc --build --clean",
+    "translate": "npx tsc",
     "update": "yarn run introspect && yarn run filter && yarn run generate",
     "initialize-check-list": "npx ts-node gql/utilities/look-up.ts",
     "on": "npx ts-node gql/editor.ts on && yarn filter",
