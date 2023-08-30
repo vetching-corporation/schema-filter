@@ -1,0 +1,22 @@
+type Post {
+  id: ID!
+  title: String!
+  content: String!
+}
+
+type Query {
+  getPost(id: ID!): Post
+  getAllPosts: [Post!]!
+}
+
+type Mutation {
+  createPost(title: String!, content: String!): Post!
+  updatePost(id: ID!, title: String, content: String): Post!
+  deletePost(id: ID!): ID!
+}
+
+type Subscription {
+  postCreated: Post!
+  postUpdated(id: ID!): Post!
+  postDeleted(id: ID!): ID!
+}
