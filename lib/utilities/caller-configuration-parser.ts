@@ -4,7 +4,7 @@ import finder from 'find-package-json'
 import path from 'path/posix'
 import { Configuration } from '../types/configuration'
 
-export let cofiguration: Configuration
+export let configuration: Configuration
 
 /// warns if not set
 export const parseCallerPackageJson = (packageInfo: any): Configuration => {
@@ -87,7 +87,7 @@ export const getConfiguration = () => {
     'Failed to get package information. Are you in project directory root-path?',
   )
 
-  cofiguration = parseCallerPackageJson(callerPackageJsonInformation)
+  configuration = parseCallerPackageJson(callerPackageJsonInformation)
 
-  console.log(cofiguration)
+  console.log(configuration)
 }

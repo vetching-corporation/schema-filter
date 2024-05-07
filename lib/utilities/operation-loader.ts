@@ -1,10 +1,10 @@
 import { existsSync, readFileSync } from 'fs'
 import { join } from 'path/posix'
 import { Operation } from '../types/operation'
-import { cofiguration } from './caller-configuration-parser'
+import { configuration } from './caller-configuration-parser'
 
 export const loadQueries = (): Operation[] => {
-  const path = join(cofiguration.filters, 'Query.json')
+  const path = join(configuration.filters, 'Query.json')
 
   console.log(`loading Query filter from ${path}`)
 
@@ -12,7 +12,7 @@ export const loadQueries = (): Operation[] => {
 }
 
 export const loadMutations = (): Operation[] => {
-  const path = join(cofiguration.filters, 'Mutation.json')
+  const path = join(configuration.filters, 'Mutation.json')
 
   console.log(`loading Mutation filter from ${path}`)
 
@@ -20,7 +20,7 @@ export const loadMutations = (): Operation[] => {
 }
 
 export const loadSubscriptions = (): Operation[] => {
-  const path = join(cofiguration.filters, 'Subscription.json')
+  const path = join(configuration.filters, 'Subscription.json')
 
   console.log(`loading Subscription filter from ${path}`)
 

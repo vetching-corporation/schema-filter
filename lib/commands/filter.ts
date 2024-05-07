@@ -2,7 +2,7 @@ import assert from 'assert'
 import { readFileSync, writeFileSync } from 'fs'
 import { buildSchema, DocumentNode, Kind, Location, parse, print as printSchema, Token } from 'graphql'
 import { filterOnlyVisitedSchema } from '../utilities/ast-filter'
-import { cofiguration } from '../utilities/caller-configuration-parser'
+import { configuration } from '../utilities/caller-configuration-parser'
 import { generateEdges } from '../utilities/edge-generator'
 import { generateNodes, SchemaNode } from '../utilities/node-generator'
 import { filterOperationsToUse } from '../utilities/operation-filter'
@@ -118,7 +118,7 @@ export const filter = () => {
   /*                                 Entry Point                                */
   /* -------------------------------------------------------------------------- */
 
-  const originalSchemaPath = cofiguration['schema-original']
+  const originalSchemaPath = configuration['schema-original']
   const originalSchema = readFileSync(originalSchemaPath, 'utf-8')
   const originalAST = parse(originalSchema)
 
@@ -179,7 +179,7 @@ export const filter = () => {
     )
   )
 
-  const reducedSchemaPath = cofiguration['schema-reduced']
+  const reducedSchemaPath = configuration['schema-reduced']
 
   writeFileSync(reducedSchemaPath, filteredSchema)
 }
