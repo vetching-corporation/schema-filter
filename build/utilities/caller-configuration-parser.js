@@ -15,7 +15,7 @@ const parseCallerPackageJson = (packageInfo) => {
     let filters = info['filters'];
     let schemaReduced = info['schema-reduced'];
     let batchSetting = info['batch-setting'];
-    let schemaNodeNameRegexesToExclude = info['node-name-regex-to-exclude'];
+    let schemaNodeNameRegexesToExclude = info['node-name-regexes-to-exclude'];
     let replacingCustomScalarName = info['replacing-custom-scalar-name'];
     (0, assert_1.default)(schemaOriginal !== undefined, 'Failed to retrieve schema file path. It\'s required field. did you forget to provide "schema-original" field in package.json?');
     if (filters === undefined) {

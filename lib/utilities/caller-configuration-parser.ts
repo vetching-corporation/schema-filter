@@ -14,7 +14,7 @@ export const parseCallerPackageJson = (packageInfo: any): Configuration => {
   let filters = info['filters']
   let schemaReduced = info['schema-reduced']
   let batchSetting = info['batch-setting']
-  let schemaNodeNameRegexesToExclude = info['node-name-regex-to-exclude']
+  let schemaNodeNameRegexesToExclude = info['node-name-regexes-to-exclude']
   let replacingCustomScalarName = info['replacing-custom-scalar-name']
 
   assert(
