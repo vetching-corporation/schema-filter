@@ -10,5 +10,9 @@
   {
     "inUse": true,
     "name": "deletePost"
+  },
+  {
+    "inUse": true,
+    "name": "updatePostWithInput"
   }
 ]

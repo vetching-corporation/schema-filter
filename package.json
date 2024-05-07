@@ -27,7 +27,9 @@
   "bin": "build/index.js",
   "main": "build/index.js",
   "schema-filter": {
-    "schema-original": "example/schema.graphql"
+    "schema-original": "example/schema.graphql",
+    "node-name-regexes-to-exclude": ["\\b\\w+(Update)\\w+(Input)\\b"],
+    "replacing-custom-scalar-name": "CustomScalarName"
   },
   "scripts": {
     "clean": "rimraf node_mobules build",

@@ -11,8 +11,13 @@ type Query {
 type Mutation {
   createPost(title: String!, content: String!): Post!
   deletePost(id: ID!): ID!
+  updatePostWithInput(id: ID!, data: CustomScalarName): Post
 }
 
 type Subscription {
   postDeleted(id: ID!): ID!
 }
+
+
+
+scalar CustomScalarName
