@@ -8,4 +8,5 @@ export type Configuration = {
     subscription: boolean
   }
   'node-name-regexes-to-exclude': string[]
+  'replacing-custom-scalar-name': string
 }

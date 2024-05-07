@@ -15,6 +15,7 @@ export const parseCallerPackageJson = (packageInfo: any): Configuration => {
   let schemaReduced = info['schema-reduced']
   let batchSetting = info['batch-setting']
   let schemaNodeNameRegexesToExclude = info['node-name-regex-to-exclude']
+  let replacingCustomScalarName = info['replacing-custom-scalar-name']
 
   assert(
     schemaOriginal !== undefined,
@@ -59,6 +60,33 @@ export const parseCallerPackageJson = (packageInfo: any): Configuration => {
     )
   }
 
+  if (schemaNodeNameRegexesToExclude === undefined) {
+    console.log(
+      chalk.yellow(
+        [
+          `"node-name-regexes-to-exclude" field is not provided, so all schema nodes will be included.`,
+        ].join('\n'),
+      ),
+    )
+  }
+
+  if (schemaNodeNameRegexesToExclude !== undefined) {
+    console.log(
+      chalk.yellow(
+        [
+          `"node-name-regexes-to-exclude" field is provided, so the schema nodes that include these kind of regex:`,
+          schemaNodeNameRegexesToExclude,
+          `will be excluded from the reduced schema.`,
+        ].join('\n'),
+      ),
+    )
+
+    assert(
+      replacingCustomScalarName !== undefined,
+      'Failed to retrieve "replacing-custom-scalar-name"; it is necessary if you provide "node-name-regexes-to-exclude" field.',
+    )
+  }
+
   return {
     'schema-original': schemaOriginal,
     filters: filters,
@@ -76,6 +104,7 @@ export const parseCallerPackageJson = (packageInfo: any): Configuration => {
             subscription: batchSetting['subscription'] === undefined ? true : batchSetting['subscription'],
           },
     'node-name-regexes-to-exclude': schemaNodeNameRegexesToExclude === undefined ? [] : schemaNodeNameRegexesToExclude,
+    'replacing-custom-scalar-name': replacingCustomScalarName,
   }
 }
 

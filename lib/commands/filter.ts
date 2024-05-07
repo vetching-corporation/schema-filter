@@ -1,17 +1,16 @@
 import assert from 'assert'
 import { readFileSync, writeFileSync } from 'fs'
-import { buildSchema, DocumentNode, Kind, Location, parse, print as printSchema, Token } from 'graphql'
+import { parse, print as printSchema } from 'graphql'
 import { filterOnlyVisitedSchema } from '../utilities/ast-filter'
 import { configuration } from '../utilities/caller-configuration-parser'
 import { generateEdges } from '../utilities/edge-generator'
 import { generateNodes, SchemaNode } from '../utilities/node-generator'
 import { filterOperationsToUse } from '../utilities/operation-filter'
-
-const customMapScalar = 'InputDynamicMap'
+import { checkIfInputToExclude, getRegexFilteredSchema } from '../utilities/schema-regex-filter'
+import chalk from 'chalk'
 
 // Located here due to stack overflow error due to large schema
 const visitedIds = new Set<number>()
-const visitedLimitIds = new Set<number>()
 let edges: Map<number, Set<number>> = new Map<number, Set<number>>()
 let schemaNodeById: Map<number, SchemaNode> = new Map<number, SchemaNode>()
 let schemaNodeIdByName: Map<String, number> = new Map<String, number>()
@@ -19,43 +18,13 @@ let schemaNodeIdsToExclude: Set<number> = new Set<number>()
 
 const dfs = ({ schemaNodeId, depth, verbose = false }: { schemaNodeId: number; depth: number; verbose?: boolean }) => {
   visitedIds.add(schemaNodeId)
-
-  const visitedNodeName = schemaNodeById.get(schemaNodeId).name
-
-  schemaNodeIdsToExclude.delete(schemaNodeId)
-
-  if (verbose) console.log(' '.repeat(depth) + visitedNodeName)
-
-  const children = edges.get(schemaNodeId)
-
-  assert(children !== undefined, `${visitedNodeName} has no children`)
-
-  if (children.size > 0) {
-    children.forEach((child) => {
-      if (!visitedIds.has(child)) {
-        dfs({
-          //
-          schemaNodeId: child,
-          depth: depth + 1,
-          ...{
-            schemaNodeById,
-            verbose,
-          },
-        })
-      }
-    })
-  }
-}
-
-const dfsLimit = ({ schemaNodeId, depth, verbose = false }: { schemaNodeId: number; depth: number; verbose?: boolean; }) => {
-  visitedLimitIds.add(schemaNodeId)
   const visitedNodeName = schemaNodeById.get(schemaNodeId).name
 
   if (verbose) console.log(' '.repeat(depth) + visitedNodeName)
 
   if (checkIfInputToExclude(visitedNodeName)) {
     schemaNodeIdsToExclude.add(schemaNodeId)
-    visitedLimitIds.delete(schemaNodeId)
+    visitedIds.delete(schemaNodeId)
     return
   }
 
@@ -69,15 +38,12 @@ const dfsLimit = ({ schemaNodeId, depth, verbose = false }: { schemaNodeId: numb
     children.forEach((child) => {
       schemaNodeIdsToExclude.delete(child)
 
-      if (!visitedLimitIds.has(child)) {
-        dfsLimit({
+      if (!visitedIds.has(child)) {
+        dfs({
           //
           schemaNodeId: child,
           depth: depth + 1,
-          ...{
-            schemaNodeById,
-            verbose,
-          },
+          verbose,
         });
       }
     })
@@ -85,30 +51,24 @@ const dfsLimit = ({ schemaNodeId, depth, verbose = false }: { schemaNodeId: numb
 }
 
 const findAllReachableSchemaNodeIds = ({ startingSchemaNodeNames }: { startingSchemaNodeNames: String[] }) => {
-  startingSchemaNodeNames.forEach((startingSchemaNodeName) => {
+  if (startingSchemaNodeNames.includes('Mutation') && configuration['node-name-regexes-to-exclude'].length === 0) {
+    console.log(
+      chalk.yellow(
+        '[WARNING] Filter option includes Mutation, however, \'node-name-regexes-to-exclude\' is not provided or empty in package.json.\n',
+        'This may lead to unexpected stack overflow.'
+      )
+    )
+  }
 
-    if (startingSchemaNodeName === 'Mutation') {
-      dfsLimit({
-        //
-        schemaNodeId: schemaNodeIdByName.get(startingSchemaNodeName),
-        depth: 0,
-        ...{
-          schemaNodeById,
-        },
-      })
-    } else {
-      dfs({
-        //
-        schemaNodeId: schemaNodeIdByName.get(startingSchemaNodeName),
-        depth: 0,
-        ...{
-          schemaNodeById,
-        },
-      })
-    }
+  startingSchemaNodeNames.forEach((startingSchemaNodeName) => {
+    dfs({
+      //
+      schemaNodeId: schemaNodeIdByName.get(startingSchemaNodeName),
+      depth: 0,
+    })
   })
 
-  const visitedAllIds = Array.from(new Set([...visitedIds, ...visitedLimitIds, ...schemaNodeIdsToExclude]))
+  const visitedAllIds = Array.from(new Set([...visitedIds, ...schemaNodeIdsToExclude]))
 
   return new Set<String>(visitedAllIds.map((visitedId) => schemaNodeById.get(visitedId).name))
 }
@@ -154,7 +114,7 @@ export const filter = () => {
    * Starting from [Query, Mutation, Subscription], Traverse
    */
 
-  const startingSchemaNodeNames = ['Mutation', 'Query', 'Subscription']
+  const startingSchemaNodeNames = ['Query', 'Mutation', 'Subscription']
   const visitedSchemaNodeNames = findAllReachableSchemaNodeIds({
     startingSchemaNodeNames,
   })
@@ -163,7 +123,7 @@ export const filter = () => {
   /**
    * Output
    */
-  console.log('schemaNodesToExclude =', schemaNodeIdsToExclude.size)
+  console.log('schemaNodesToExclude count =', schemaNodeIdsToExclude.size)
 
   const schemaNodeNamesToExclude = Array.from(schemaNodeIdsToExclude).map((id) => schemaNodeById.get(id).name)
 
@@ -171,44 +131,9 @@ export const filter = () => {
 
   const filteredSchemaString = printSchema(filteredAST)
 
-  const filteredSchema = addCustomScalar(
-    replaceExcludedInputsFromSchema(
-      schemaNodeNamesToExclude, filterRegex(
-        schemaNodeNamesToExclude, filteredSchemaString
-      )
-    )
-  )
+  const filteredSchema = getRegexFilteredSchema(schemaNodeNamesToExclude, filteredSchemaString)
 
   const reducedSchemaPath = configuration['schema-reduced']
 
   writeFileSync(reducedSchemaPath, filteredSchema)
-}
-
-const filterRegex = (typesToEmpty: string[], filteredSchema: string) => {
-  const modifiedText = filteredSchema.split('\n\n').map(typeDef => {
-    const typeName = typeDef.match(/input\s+(\w+)\s*\{/)?.[1];
-    return typeName && typesToEmpty.includes(typeName) ? `` : typeDef;
-  }).join('\n\n');
-
-  return modifiedText;
-}
-
-const checkIfInputToExclude = (schemaNodeName: string): boolean => {
-  return /\b\w+(CreateWithout)\w+(Input)\b/.test(schemaNodeName)
-    || /\b\w+(UpdateWithout)\w+(Input)\b/.test(schemaNodeName);
-}
-
-const replaceExcludedInputsFromSchema = (schemaNodeNamesToExclude: string[], filteredSchema: string): string => {
-  let arrangedSchema = filteredSchema
-
-  schemaNodeNamesToExclude.forEach((schemaNodeName) => {
-    arrangedSchema = arrangedSchema.replaceAll(`: ${schemaNodeName}`, `: ${customMapScalar}`)
-    arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}`, `: [${customMapScalar}`)
-  })
-
-  return arrangedSchema
-}
-
-const addCustomScalar = (schema: string): string => {
-  return schema + `\n\nscalar ${customMapScalar}\n`;
 }
