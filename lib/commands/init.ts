@@ -13,7 +13,7 @@ import * as path from 'path/posix'
 import { assert } from 'console'
 import { lowerCase } from 'lodash'
 import { Operation } from '../types/operation'
-import { cofiguration } from '../utilities/caller-configuration-parser'
+import { configuration } from '../utilities/caller-configuration-parser'
 import { loadMutations, loadQueries, loadSubscriptions } from '../utilities/operation-loader'
 
 const isTypeSystemExtensionNode = (node: DefinitionNode): node is TypeSystemExtensionNode => {
@@ -60,9 +60,9 @@ const loadExistingOperationFilterMap = () => {
 }
 
 export const initializeFilters = () => {
-  const originalSchema = readFileSync(cofiguration['schema-original'], 'utf-8')
+  const originalSchema = readFileSync(configuration['schema-original'], 'utf-8')
   const ast = parse(originalSchema)
-  const outputPath = cofiguration['filters']
+  const outputPath = configuration['filters']
 
   if (!existsSync(outputPath)) {
     mkdirSync(outputPath)
@@ -118,7 +118,7 @@ export const initializeFilters = () => {
               definitionNode.fields?.forEach((field) => {
                 const fieldName = field.name.value
 
-                const batchSettingToUse = cofiguration['batch-setting'][lowerCase(typeName)]
+                const batchSettingToUse = configuration['batch-setting'][lowerCase(typeName)]
 
                 operationInUse.push({
                   inUse: isOperationInUse.has(fieldName) ? isOperationInUse.get(fieldName)! : batchSettingToUse,

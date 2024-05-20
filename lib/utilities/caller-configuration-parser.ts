@@ -4,7 +4,7 @@ import finder from 'find-package-json'
 import path from 'path/posix'
 import { Configuration } from '../types/configuration'
 
-export let cofiguration: Configuration
+export let configuration: Configuration
 
 /// warns if not set
 export const parseCallerPackageJson = (packageInfo: any): Configuration => {
@@ -14,6 +14,8 @@ export const parseCallerPackageJson = (packageInfo: any): Configuration => {
   let filters = info['filters']
   let schemaReduced = info['schema-reduced']
   let batchSetting = info['batch-setting']
+  let schemaNodeNameRegexesToExclude = info['node-name-regexes-to-exclude']
+  let replacingCustomScalarName = info['replacing-custom-scalar-name']
 
   assert(
     schemaOriginal !== undefined,
@@ -58,6 +60,33 @@ export const parseCallerPackageJson = (packageInfo: any): Configuration => {
     )
   }
 
+  if (schemaNodeNameRegexesToExclude === undefined) {
+    console.log(
+      chalk.yellow(
+        [
+          `"node-name-regexes-to-exclude" field is not provided, so all schema nodes will be included.`,
+        ].join('\n'),
+      ),
+    )
+  }
+
+  if (schemaNodeNameRegexesToExclude !== undefined) {
+    console.log(
+      chalk.yellow(
+        [
+          `"node-name-regexes-to-exclude" field is provided, so the schema nodes that include these kind of regex:`,
+          schemaNodeNameRegexesToExclude,
+          `will be excluded from the reduced schema.`,
+        ].join('\n'),
+      ),
+    )
+
+    assert(
+      replacingCustomScalarName !== undefined,
+      'Failed to retrieve "replacing-custom-scalar-name"; it is necessary if you provide "node-name-regexes-to-exclude" field.',
+    )
+  }
+
   return {
     'schema-original': schemaOriginal,
     filters: filters,
@@ -74,6 +103,8 @@ export const parseCallerPackageJson = (packageInfo: any): Configuration => {
             mutation: batchSetting['mutation'] === undefined ? true : batchSetting['mutation'],
             subscription: batchSetting['subscription'] === undefined ? true : batchSetting['subscription'],
           },
+    'node-name-regexes-to-exclude': schemaNodeNameRegexesToExclude === undefined ? [] : schemaNodeNameRegexesToExclude,
+    'replacing-custom-scalar-name': replacingCustomScalarName,
   }
 }
 
@@ -85,7 +116,7 @@ export const getConfiguration = () => {
     'Failed to get package information. Are you in project directory root-path?',
   )
 
-  cofiguration = parseCallerPackageJson(callerPackageJsonInformation)
+  configuration = parseCallerPackageJson(callerPackageJsonInformation)
 
-  console.log(cofiguration)
+  console.log(configuration)
 }

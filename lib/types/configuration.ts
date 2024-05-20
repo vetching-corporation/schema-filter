@@ -7,4 +7,6 @@ export type Configuration = {
     mutation: boolean
     subscription: boolean
   }
+  'node-name-regexes-to-exclude': string[]
+  'replacing-custom-scalar-name': string
 }

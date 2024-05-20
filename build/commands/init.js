@@ -63,9 +63,9 @@ const loadExistingOperationFilterMap = () => {
     return currentInUseOperationMap;
 };
 const initializeFilters = () => {
-    const originalSchema = (0, fs_1.readFileSync)(caller_configuration_parser_1.cofiguration['schema-original'], 'utf-8');
+    const originalSchema = (0, fs_1.readFileSync)(caller_configuration_parser_1.configuration['schema-original'], 'utf-8');
     const ast = (0, graphql_1.parse)(originalSchema);
-    const outputPath = caller_configuration_parser_1.cofiguration['filters'];
+    const outputPath = caller_configuration_parser_1.configuration['filters'];
     if (!(0, fs_1.existsSync)(outputPath)) {
         (0, fs_1.mkdirSync)(outputPath);
     }
@@ -107,7 +107,7 @@ const initializeFilters = () => {
                             const operationInUse = [];
                             definitionNode.fields?.forEach((field) => {
                                 const fieldName = field.name.value;
-                                const batchSettingToUse = caller_configuration_parser_1.cofiguration['batch-setting'][(0, lodash_1.lowerCase)(typeName)];
+                                const batchSettingToUse = caller_configuration_parser_1.configuration['batch-setting'][(0, lodash_1.lowerCase)(typeName)];
                                 operationInUse.push({
                                     inUse: isOperationInUse.has(fieldName) ? isOperationInUse.get(fieldName) : batchSettingToUse,
                                     name: fieldName,
