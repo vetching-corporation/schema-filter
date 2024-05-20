@@ -45,8 +45,33 @@ const replaceExcludedInputsFromSchema = (schemaNodeNamesToExclude: string[], fil
   }
 
   schemaNodeNamesToExclude.forEach((schemaNodeName) => {
-    arrangedSchema = arrangedSchema.replaceAll(`: ${schemaNodeName}`, `: ${customMapScalarName}`)
-    arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}`, `: [${customMapScalarName}`)
+    /* -------------------------------------------------------------------------- */
+    /*                 CASE: Query, Mutation, Subscription Inputs                 */
+    /* -------------------------------------------------------------------------- */
+
+    arrangedSchema = arrangedSchema.replaceAll(`: ${schemaNodeName},`, `: ${customMapScalarName},`)
+    arrangedSchema = arrangedSchema.replaceAll(`: ${schemaNodeName}!,`, `: ${customMapScalarName}!,`)
+    arrangedSchema = arrangedSchema.replaceAll(`: ${schemaNodeName})`, `: ${customMapScalarName})`)
+    arrangedSchema = arrangedSchema.replaceAll(`: ${schemaNodeName}!)`, `: ${customMapScalarName}!)`)
+    arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}],`, `: [${customMapScalarName}],`)
+    arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}!],`, `: [${customMapScalarName}!],`)
+    arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}]!,`, `: [${customMapScalarName}]!,`)
+    arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}!]!,`, `: [${customMapScalarName}!]!,`)
+    arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}])`, `: [${customMapScalarName}])`)
+    arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}!])`, `: [${customMapScalarName}!])`)
+    arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}]!)`, `: [${customMapScalarName}]!)`)
+    arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}!]!)`, `: [${customMapScalarName}!]!)`)
+
+    /* -------------------------------------------------------------------------- */
+    /*          CASE: Query, Mutation, Subscription Results or input type         */
+    /* -------------------------------------------------------------------------- */
+
+    arrangedSchema = arrangedSchema.replaceAll(`: ${schemaNodeName}\n`, `: ${customMapScalarName}\n`)
+    arrangedSchema = arrangedSchema.replaceAll(`: ${schemaNodeName}!\n`, `: ${customMapScalarName}!\n`)
+    arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}]\n`, `: [${customMapScalarName}]\n`)
+    arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}!]\n`, `: [${customMapScalarName}!]\n`)
+    arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}]!\n`, `: [${customMapScalarName}]!\n`)
+    arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}!]!\n`, `: [${customMapScalarName}!]!\n`)
   })
 
   return arrangedSchema
