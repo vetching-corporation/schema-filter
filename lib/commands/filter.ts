@@ -27,7 +27,6 @@ const dfs = ({ schemaNodeId, depth, verbose = false }: { schemaNodeId: number; d
 
   if (visitedNodeKind === Kind.INPUT_OBJECT_TYPE_DEFINITION && checkIfInputToExclude(visitedNodeName)) {
     schemaNodeIdsToExclude.add(schemaNodeId)
-    visitedIds.delete(schemaNodeId)
     return
   }
 
@@ -36,10 +35,7 @@ const dfs = ({ schemaNodeId, depth, verbose = false }: { schemaNodeId: number; d
   assert(children !== undefined, `${visitedNodeName} has no children`)
 
   if (children.size > 0) {
-    schemaNodeIdsToExclude.delete(schemaNodeId)
-
     children.forEach((child) => {
-      schemaNodeIdsToExclude.delete(child)
 
       if (!visitedIds.has(child)) {
         dfs({

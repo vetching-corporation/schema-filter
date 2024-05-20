@@ -25,20 +25,16 @@ const dfs = ({ schemaNodeId, depth, verbose = false }) => {
     const currentSchemaNode = schemaNodeById.get(schemaNodeId);
     const visitedNodeName = currentSchemaNode.name;
     const visitedNodeKind = currentSchemaNode.kind;
-    console.log('visitedNodeName =', visitedNodeName, 'visitedNodeKind =', visitedNodeKind);
     if (verbose)
         console.log(' '.repeat(depth) + visitedNodeName);
     if (visitedNodeKind === graphql_1.Kind.INPUT_OBJECT_TYPE_DEFINITION && (0, schema_regex_filter_1.checkIfInputToExclude)(visitedNodeName)) {
         schemaNodeIdsToExclude.add(schemaNodeId);
-        visitedIds.delete(schemaNodeId);
         return;
     }
     const children = edges.get(schemaNodeId);
     (0, assert_1.default)(children !== undefined, `${visitedNodeName} has no children`);
     if (children.size > 0) {
-        schemaNodeIdsToExclude.delete(schemaNodeId);
         children.forEach((child) => {
-            schemaNodeIdsToExclude.delete(child);
             if (!visitedIds.has(child)) {
                 dfs({
                     //
