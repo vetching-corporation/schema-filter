@@ -22,10 +22,13 @@ let schemaNodeIdByName = new Map();
 let schemaNodeIdsToExclude = new Set();
 const dfs = ({ schemaNodeId, depth, verbose = false }) => {
     visitedIds.add(schemaNodeId);
-    const visitedNodeName = schemaNodeById.get(schemaNodeId).name;
+    const currentSchemaNode = schemaNodeById.get(schemaNodeId);
+    const visitedNodeName = currentSchemaNode.name;
+    const visitedNodeKind = currentSchemaNode.kind;
+    console.log('visitedNodeName =', visitedNodeName, 'visitedNodeKind =', visitedNodeKind);
     if (verbose)
         console.log(' '.repeat(depth) + visitedNodeName);
-    if ((0, schema_regex_filter_1.checkIfInputToExclude)(visitedNodeName)) {
+    if (visitedNodeKind === graphql_1.Kind.INPUT_OBJECT_TYPE_DEFINITION && (0, schema_regex_filter_1.checkIfInputToExclude)(visitedNodeName)) {
         schemaNodeIdsToExclude.add(schemaNodeId);
         visitedIds.delete(schemaNodeId);
         return;

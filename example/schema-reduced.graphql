@@ -6,6 +6,7 @@ type Post {
 
 type Query {
   getPost(id: ID!): Post
+  getPostId(id: ID!): PostIdUpdateDataInput
 }
 
 type Mutation {
@@ -19,5 +20,9 @@ type Subscription {
 }
 
 
+
+type PostIdUpdateDataInput {
+  id: ID
+}
 
 scalar CustomScalarName

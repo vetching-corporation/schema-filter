@@ -1,6 +1,6 @@
 import assert from 'assert'
 import { readFileSync, writeFileSync } from 'fs'
-import { parse, print as printSchema } from 'graphql'
+import { Kind, parse, print as printSchema } from 'graphql'
 import { filterOnlyVisitedSchema } from '../utilities/ast-filter'
 import { configuration } from '../utilities/caller-configuration-parser'
 import { generateEdges } from '../utilities/edge-generator'
@@ -18,11 +18,14 @@ let schemaNodeIdsToExclude: Set<number> = new Set<number>()
 
 const dfs = ({ schemaNodeId, depth, verbose = false }: { schemaNodeId: number; depth: number; verbose?: boolean }) => {
   visitedIds.add(schemaNodeId)
-  const visitedNodeName = schemaNodeById.get(schemaNodeId).name
+
+  const currentSchemaNode = schemaNodeById.get(schemaNodeId)
+  const visitedNodeName = currentSchemaNode.name
+  const visitedNodeKind = currentSchemaNode.kind
 
   if (verbose) console.log(' '.repeat(depth) + visitedNodeName)
 
-  if (checkIfInputToExclude(visitedNodeName)) {
+  if (visitedNodeKind === Kind.INPUT_OBJECT_TYPE_DEFINITION && checkIfInputToExclude(visitedNodeName)) {
     schemaNodeIdsToExclude.add(schemaNodeId)
     visitedIds.delete(schemaNodeId)
     return

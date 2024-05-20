@@ -28,9 +28,11 @@ const generateNodes = (ast) => {
         }
         const id = index + 1;
         const name = definitionNode.name.value;
+        const kind = definitionNode.kind;
         schemaNodeById.set(id, {
             id,
             name,
+            kind,
         });
         schemaNodeIdByName.set(name, id);
     }
