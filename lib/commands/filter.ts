@@ -6,7 +6,7 @@ import { configuration } from '../utilities/caller-configuration-parser'
 import { generateEdges } from '../utilities/edge-generator'
 import { generateNodes, SchemaNode } from '../utilities/node-generator'
 import { filterOperationsToUse } from '../utilities/operation-filter'
-import { doesNodeNameFitRegex } from '../utilities/schema-regex-filter'
+import { doesNodeNameFitRegex } from '../utilities/regex-filter'
 import chalk from 'chalk'
 
 // Located here due to stack overflow error due to large schema

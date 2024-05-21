@@ -12,7 +12,7 @@ const caller_configuration_parser_1 = require("../utilities/caller-configuration
 const edge_generator_1 = require("../utilities/edge-generator");
 const node_generator_1 = require("../utilities/node-generator");
 const operation_filter_1 = require("../utilities/operation-filter");
-const schema_regex_filter_1 = require("../utilities/schema-regex-filter");
+const regex_filter_1 = require("../utilities/regex-filter");
 const chalk_1 = __importDefault(require("chalk"));
 // Located here due to stack overflow error due to large schema
 const visitedIds = new Set();
@@ -31,7 +31,7 @@ const dfs = ({ schemaNodeId, depth, verbose = false }) => {
      * node가 Input Object 타입이고, 사용자가 제외하고자 하는 regex에 걸리는 경우
      * 제외할 목록(Set)에 넣습니다.
      * */
-    if (visitedNodeKind === graphql_1.Kind.INPUT_OBJECT_TYPE_DEFINITION && (0, schema_regex_filter_1.doesNodeNameFitRegex)(visitedNodeName)) {
+    if (visitedNodeKind === graphql_1.Kind.INPUT_OBJECT_TYPE_DEFINITION && (0, regex_filter_1.doesNodeNameFitRegex)(visitedNodeName)) {
         schemaNodeIdsToExclude.add(schemaNodeId);
         return;
     }
