@@ -1,12 +1,20 @@
 import { DocumentNode, Kind, ScalarTypeDefinitionNode, visit } from 'graphql'
 
-export const filterOnlyVisitedSchema = (
+export const filterOnlyVisitedSchema = ({
+  ast,
+  visitedSchemaNodeNames,
+  schemaNodeNamesToExclude,
+  customScalarName,
+}: {
   ast: DocumentNode,
   visitedSchemaNodeNames: Set<String>,
-  schemaNodeNamesToExclude?: Set<String>,
-  customScalarName?: string,
-) => {
+  schemaNodeNamesToExclude ? : Set<String>,
+  customScalarName ? : string
+}) => {
   return visit(ast, {
+    /**
+     * 방문한 기록이 있는 node만 남깁니다.
+     * */
     enter(node) {
       if (
         !(
@@ -28,6 +36,9 @@ export const filterOnlyVisitedSchema = (
 
       return node;
     },
+    /**
+     * 제외해야 하는 node를 custom scalar로 바꾸어 줍니다.
+     * */
     NamedType (node) {
       if (
         !schemaNodeNamesToExclude ||
@@ -52,7 +63,16 @@ export const filterOnlyVisitedSchema = (
   });
 };
 
-export const addCustomScalarType = (ast: DocumentNode, customScalarName?: string) => {
+/**
+ * 스키마에 custom scalar type을 추가합니다.
+ * */
+export const addCustomScalarType = ({
+  ast,
+  customScalarName
+}: {
+  ast: DocumentNode,
+  customScalarName?: string
+}) => {
   if (!customScalarName) {
     return ast;
   }

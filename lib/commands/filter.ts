@@ -6,7 +6,7 @@ import { configuration } from '../utilities/caller-configuration-parser'
 import { generateEdges } from '../utilities/edge-generator'
 import { generateNodes, SchemaNode } from '../utilities/node-generator'
 import { filterOperationsToUse } from '../utilities/operation-filter'
-import { addCustomScalar, checkIfInputToExclude } from '../utilities/schema-regex-filter'
+import { doesNodeNameFitRegex } from '../utilities/schema-regex-filter'
 import chalk from 'chalk'
 
 // Located here due to stack overflow error due to large schema
@@ -25,7 +25,11 @@ const dfs = ({ schemaNodeId, depth, verbose = false }: { schemaNodeId: number; d
 
   if (verbose) console.log(' '.repeat(depth) + visitedNodeName)
 
-  if (visitedNodeKind === Kind.INPUT_OBJECT_TYPE_DEFINITION && checkIfInputToExclude(visitedNodeName)) {
+  /**
+   * node가 Input Object 타입이고, 사용자가 제외하고자 하는 regex에 걸리는 경우
+   * 제외할 목록(Set)에 넣습니다.
+   * */
+  if (visitedNodeKind === Kind.INPUT_OBJECT_TYPE_DEFINITION && doesNodeNameFitRegex(visitedNodeName)) {
     schemaNodeIdsToExclude.add(schemaNodeId)
     return
   }
@@ -132,18 +136,19 @@ export const filter = () => {
 
   const schemaNodeNamesToExclude = new Set(Array.from(schemaNodeIdsToExclude).map((id) => schemaNodeById.get(id).name))
 
-  const filteredAST = filterOnlyVisitedSchema(
-    operationFilteredAST,
+  const visitFilteredAST = filterOnlyVisitedSchema({
+    ast: operationFilteredAST,
     visitedSchemaNodeNames,
     schemaNodeNamesToExclude,
-    customScalarName
-  )
+    customScalarName,
+  })
 
-  const customSchemaAddedAST = addCustomScalarType(filteredAST, customScalarName)
+  const customScalarAddedAST = addCustomScalarType({
+    ast: visitFilteredAST,
+    customScalarName,
+  })
 
-  const filteredSchemaString = printSchema(customSchemaAddedAST)
-
-  // const filteredSchema = addCustomScalar(filteredSchemaString)
+  const filteredSchemaString = printSchema(customScalarAddedAST)
 
   const reducedSchemaPath = configuration['schema-reduced']
 

@@ -27,7 +27,11 @@ const dfs = ({ schemaNodeId, depth, verbose = false }) => {
     const visitedNodeKind = currentSchemaNode.kind;
     if (verbose)
         console.log(' '.repeat(depth) + visitedNodeName);
-    if (visitedNodeKind === graphql_1.Kind.INPUT_OBJECT_TYPE_DEFINITION && (0, schema_regex_filter_1.checkIfInputToExclude)(visitedNodeName)) {
+    /**
+     * node가 Input Object 타입이고, 사용자가 제외하고자 하는 regex에 걸리는 경우
+     * 제외할 목록(Set)에 넣습니다.
+     * */
+    if (visitedNodeKind === graphql_1.Kind.INPUT_OBJECT_TYPE_DEFINITION && (0, schema_regex_filter_1.doesNodeNameFitRegex)(visitedNodeName)) {
         schemaNodeIdsToExclude.add(schemaNodeId);
         return;
     }
@@ -105,10 +109,17 @@ const filter = () => {
      */
     console.log('schemaNodesToExclude count =', schemaNodeIdsToExclude.size);
     const schemaNodeNamesToExclude = new Set(Array.from(schemaNodeIdsToExclude).map((id) => schemaNodeById.get(id).name));
-    const filteredAST = (0, ast_filter_1.filterOnlyVisitedSchema)(operationFilteredAST, visitedSchemaNodeNames, schemaNodeNamesToExclude, customScalarName);
-    const customSchemaAddedAST = (0, ast_filter_1.addCustomScalarType)(filteredAST, customScalarName);
-    const filteredSchemaString = (0, graphql_1.print)(customSchemaAddedAST);
-    // const filteredSchema = addCustomScalar(filteredSchemaString)
+    const visitFilteredAST = (0, ast_filter_1.filterOnlyVisitedSchema)({
+        ast: operationFilteredAST,
+        visitedSchemaNodeNames,
+        schemaNodeNamesToExclude,
+        customScalarName,
+    });
+    const customScalarAddedAST = (0, ast_filter_1.addCustomScalarType)({
+        ast: visitFilteredAST,
+        customScalarName,
+    });
+    const filteredSchemaString = (0, graphql_1.print)(customScalarAddedAST);
     const reducedSchemaPath = caller_configuration_parser_1.configuration['schema-reduced'];
     (0, fs_1.writeFileSync)(reducedSchemaPath, filteredSchemaString);
 };
