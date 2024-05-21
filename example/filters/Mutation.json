@@ -14,5 +14,9 @@
   {
     "inUse": true,
     "name": "updatePostWithInput"
+  },
+  {
+    "inUse": true,
+    "name": "createPostWithInput"
   }
 ]

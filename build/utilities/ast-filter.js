@@ -41,6 +41,24 @@ const filterOnlyVisitedSchema = (ast, visitedSchemaNodeNames, schemaNodeNamesToE
                 arguments: newArgs,
             };
         },
+        NamedType(node) {
+            if (!schemaNodeNamesToExclude ||
+                !customScalarName ||
+                schemaNodeNamesToExclude.size === 0 ||
+                customScalarName.length === 0) {
+                return node;
+            }
+            if (schemaNodeNamesToExclude.has(node.name.value)) {
+                return {
+                    ...node,
+                    name: {
+                        ...node.name,
+                        value: customScalarName,
+                    },
+                };
+            }
+            return node;
+        }
     });
 };
 exports.filterOnlyVisitedSchema = filterOnlyVisitedSchema;
