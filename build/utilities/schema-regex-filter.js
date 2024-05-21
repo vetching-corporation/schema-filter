@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRegexFilteredSchema = exports.checkIfInputToExclude = void 0;
+exports.addCustomScalar = exports.getRegexFilteredSchema = exports.checkIfInputToExclude = void 0;
 const caller_configuration_parser_1 = require("./caller-configuration-parser");
 const checkIfInputToExclude = (schemaNodeName) => {
     const customMapScalarName = caller_configuration_parser_1.configuration['node-name-regexes-to-exclude'];
@@ -11,10 +11,10 @@ const checkIfInputToExclude = (schemaNodeName) => {
     return regexes.some((regex) => regex.test(schemaNodeName));
 };
 exports.checkIfInputToExclude = checkIfInputToExclude;
-const getRegexFilteredSchema = (schemaNodeNamesToExclude, schema) => {
+const getRegexFilteredSchema = (schema) => {
     let filteredSchema = schema;
-    filteredSchema = replaceExcludedInputsFromSchema(schemaNodeNamesToExclude, filteredSchema);
-    filteredSchema = addCustomScalar(filteredSchema);
+    // filteredSchema = replaceExcludedInputsFromSchema(schemaNodeNamesToExclude, filteredSchema)
+    filteredSchema = (0, exports.addCustomScalar)(filteredSchema);
     // return filterRegex(schemaNodeNamesToExclude, filteredSchema)
     return filteredSchema;
 };
@@ -70,3 +70,4 @@ const addCustomScalar = (schema) => {
     }
     return schema + `\n\nscalar ${customMapScalarName}\n`;
 };
+exports.addCustomScalar = addCustomScalar;

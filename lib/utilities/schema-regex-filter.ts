@@ -12,10 +12,10 @@ export const checkIfInputToExclude = (schemaNodeName: string): boolean => {
   return regexes.some((regex) => regex.test(schemaNodeName))
 }
 
-export const getRegexFilteredSchema = (schemaNodeNamesToExclude: string[], schema: string): string => {
+export const getRegexFilteredSchema = (schema: string): string => {
   let filteredSchema = schema
 
-  filteredSchema = replaceExcludedInputsFromSchema(schemaNodeNamesToExclude, filteredSchema)
+  // filteredSchema = replaceExcludedInputsFromSchema(schemaNodeNamesToExclude, filteredSchema)
 
   filteredSchema = addCustomScalar(filteredSchema)
 
@@ -79,7 +79,7 @@ const replaceExcludedInputsFromSchema = (schemaNodeNamesToExclude: string[], fil
   return arrangedSchema
 }
 
-const addCustomScalar = (schema: string): string => {
+export const addCustomScalar = (schema: string): string => {
   const customMapScalarName = configuration['replacing-custom-scalar-name']
 
   if (customMapScalarName === undefined || customMapScalarName === '') {

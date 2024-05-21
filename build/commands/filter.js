@@ -99,14 +99,15 @@ const filter = () => {
     const visitedSchemaNodeNames = findAllReachableSchemaNodeIds({
         startingSchemaNodeNames,
     });
+    const customScalarName = caller_configuration_parser_1.configuration['replacing-custom-scalar-name'];
     /**
      * Output
      */
     console.log('schemaNodesToExclude count =', schemaNodeIdsToExclude.size);
-    const schemaNodeNamesToExclude = Array.from(schemaNodeIdsToExclude).map((id) => schemaNodeById.get(id).name);
-    const filteredAST = (0, ast_filter_1.filterOnlyVisitedSchema)(operationFilteredAST, visitedSchemaNodeNames);
+    const schemaNodeNamesToExclude = new Set(Array.from(schemaNodeIdsToExclude).map((id) => schemaNodeById.get(id).name));
+    const filteredAST = (0, ast_filter_1.filterOnlyVisitedSchema)(operationFilteredAST, visitedSchemaNodeNames, schemaNodeNamesToExclude, customScalarName);
     const filteredSchemaString = (0, graphql_1.print)(filteredAST);
-    const filteredSchema = (0, schema_regex_filter_1.getRegexFilteredSchema)(schemaNodeNamesToExclude, filteredSchemaString);
+    const filteredSchema = (0, schema_regex_filter_1.addCustomScalar)(filteredSchemaString);
     const reducedSchemaPath = caller_configuration_parser_1.configuration['schema-reduced'];
     (0, fs_1.writeFileSync)(reducedSchemaPath, filteredSchema);
 };

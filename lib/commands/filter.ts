@@ -6,7 +6,7 @@ import { configuration } from '../utilities/caller-configuration-parser'
 import { generateEdges } from '../utilities/edge-generator'
 import { generateNodes, SchemaNode } from '../utilities/node-generator'
 import { filterOperationsToUse } from '../utilities/operation-filter'
-import { checkIfInputToExclude, getRegexFilteredSchema } from '../utilities/schema-regex-filter'
+import { addCustomScalar, checkIfInputToExclude } from '../utilities/schema-regex-filter'
 import chalk from 'chalk'
 
 // Located here due to stack overflow error due to large schema
@@ -123,19 +123,25 @@ export const filter = () => {
     startingSchemaNodeNames,
   })
 
+  const customScalarName = configuration['replacing-custom-scalar-name']
 
   /**
    * Output
    */
   console.log('schemaNodesToExclude count =', schemaNodeIdsToExclude.size)
 
-  const schemaNodeNamesToExclude = Array.from(schemaNodeIdsToExclude).map((id) => schemaNodeById.get(id).name)
+  const schemaNodeNamesToExclude = new Set(Array.from(schemaNodeIdsToExclude).map((id) => schemaNodeById.get(id).name))
 
-  const filteredAST = filterOnlyVisitedSchema(operationFilteredAST, visitedSchemaNodeNames)
+  const filteredAST = filterOnlyVisitedSchema(
+    operationFilteredAST,
+    visitedSchemaNodeNames,
+    schemaNodeNamesToExclude,
+    customScalarName
+  )
 
   const filteredSchemaString = printSchema(filteredAST)
 
-  const filteredSchema = getRegexFilteredSchema(schemaNodeNamesToExclude, filteredSchemaString)
+  const filteredSchema = addCustomScalar(filteredSchemaString)
 
   const reducedSchemaPath = configuration['schema-reduced']
 
