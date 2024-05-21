@@ -1,4 +1,4 @@
-import { DocumentNode, Kind, visit } from "graphql";
+import { DocumentNode, Kind, ScalarTypeDefinitionNode, visit } from 'graphql'
 
 export const filterOnlyVisitedSchema = (
   ast: DocumentNode,
@@ -57,3 +57,24 @@ export const filterOnlyVisitedSchema = (
     },
   });
 };
+
+export const addCustomScalarType = (ast: DocumentNode, customScalarName?: string) => {
+  if (!customScalarName) {
+    return ast;
+  }
+
+  const scalarTypeDefinitionNode: ScalarTypeDefinitionNode = {
+    kind: Kind.SCALAR_TYPE_DEFINITION,
+    name: {
+      kind: Kind.NAME,
+      value: customScalarName,
+    },
+  };
+
+  const newAstDefinitions = [...ast.definitions, scalarTypeDefinitionNode]
+
+  return {
+    ...ast,
+    definitions: newAstDefinitions,
+  };
+}

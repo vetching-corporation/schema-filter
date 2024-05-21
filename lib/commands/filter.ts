@@ -1,7 +1,7 @@
 import assert from 'assert'
 import { readFileSync, writeFileSync } from 'fs'
 import { Kind, parse, print as printSchema } from 'graphql'
-import { filterOnlyVisitedSchema } from '../utilities/ast-filter'
+import { addCustomScalarType, filterOnlyVisitedSchema } from '../utilities/ast-filter'
 import { configuration } from '../utilities/caller-configuration-parser'
 import { generateEdges } from '../utilities/edge-generator'
 import { generateNodes, SchemaNode } from '../utilities/node-generator'
@@ -139,11 +139,13 @@ export const filter = () => {
     customScalarName
   )
 
-  const filteredSchemaString = printSchema(filteredAST)
+  const customSchemaAddedAST = addCustomScalarType(filteredAST, customScalarName)
 
-  const filteredSchema = addCustomScalar(filteredSchemaString)
+  const filteredSchemaString = printSchema(customSchemaAddedAST)
+
+  // const filteredSchema = addCustomScalar(filteredSchemaString)
 
   const reducedSchemaPath = configuration['schema-reduced']
 
-  writeFileSync(reducedSchemaPath, filteredSchema)
+  writeFileSync(reducedSchemaPath, filteredSchemaString)
 }

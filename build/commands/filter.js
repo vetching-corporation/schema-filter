@@ -106,9 +106,10 @@ const filter = () => {
     console.log('schemaNodesToExclude count =', schemaNodeIdsToExclude.size);
     const schemaNodeNamesToExclude = new Set(Array.from(schemaNodeIdsToExclude).map((id) => schemaNodeById.get(id).name));
     const filteredAST = (0, ast_filter_1.filterOnlyVisitedSchema)(operationFilteredAST, visitedSchemaNodeNames, schemaNodeNamesToExclude, customScalarName);
-    const filteredSchemaString = (0, graphql_1.print)(filteredAST);
-    const filteredSchema = (0, schema_regex_filter_1.addCustomScalar)(filteredSchemaString);
+    const customSchemaAddedAST = (0, ast_filter_1.addCustomScalarType)(filteredAST, customScalarName);
+    const filteredSchemaString = (0, graphql_1.print)(customSchemaAddedAST);
+    // const filteredSchema = addCustomScalar(filteredSchemaString)
     const reducedSchemaPath = caller_configuration_parser_1.configuration['schema-reduced'];
-    (0, fs_1.writeFileSync)(reducedSchemaPath, filteredSchema);
+    (0, fs_1.writeFileSync)(reducedSchemaPath, filteredSchemaString);
 };
 exports.filter = filter;
