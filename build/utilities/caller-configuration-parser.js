@@ -15,8 +15,8 @@ const parseCallerPackageJson = (packageInfo) => {
     let filters = info['filters'];
     let schemaReduced = info['schema-reduced'];
     let batchSetting = info['batch-setting'];
-    let schemaNodeNameRegexesToExclude = info['node-name-regexes-to-exclude'];
-    let replacingCustomScalarName = info['replacing-custom-scalar-name'];
+    let schemaNodeNameRegexesToExclude = info['input-type-name-regexes-to-remove'];
+    let replacingCustomScalarName = info['custom-scalar-name'];
     (0, assert_1.default)(schemaOriginal !== undefined, 'Failed to retrieve schema file path. It\'s required field. did you forget to provide "schema-original" field in package.json?');
     if (filters === undefined) {
         filters = posix_1.default.join(posix_1.default.dirname(schemaOriginal), 'filters');
@@ -38,16 +38,16 @@ const parseCallerPackageJson = (packageInfo) => {
     }
     if (schemaNodeNameRegexesToExclude === undefined) {
         console.log(chalk_1.default.yellow([
-            `"node-name-regexes-to-exclude" field is not provided, so all schema nodes will be included.`,
+            `"input-type-name-regexes-to-remove" field is not provided, so all schema nodes will be included.`,
         ].join('\n')));
     }
     if (schemaNodeNameRegexesToExclude !== undefined) {
         console.log(chalk_1.default.yellow([
-            `"node-name-regexes-to-exclude" field is provided, so the schema nodes that include these kind of regex:`,
+            `"input-type-name-regexes-to-remove" field is provided, so the schema nodes that include these kind of regex:`,
             schemaNodeNameRegexesToExclude,
             `will be excluded from the reduced schema.`,
         ].join('\n')));
-        (0, assert_1.default)(replacingCustomScalarName !== undefined, 'Failed to retrieve "replacing-custom-scalar-name"; it is necessary if you provide "node-name-regexes-to-exclude" field.');
+        (0, assert_1.default)(replacingCustomScalarName !== undefined, 'Failed to retrieve "custom-scalar-name"; it is necessary if you provide "input-type-name-regexes-to-remove" field.');
     }
     return {
         'schema-original': schemaOriginal,
@@ -64,8 +64,8 @@ const parseCallerPackageJson = (packageInfo) => {
                 mutation: batchSetting['mutation'] === undefined ? true : batchSetting['mutation'],
                 subscription: batchSetting['subscription'] === undefined ? true : batchSetting['subscription'],
             },
-        'node-name-regexes-to-exclude': schemaNodeNameRegexesToExclude === undefined ? [] : schemaNodeNameRegexesToExclude,
-        'replacing-custom-scalar-name': replacingCustomScalarName,
+        'input-type-name-regexes-to-remove': schemaNodeNameRegexesToExclude === undefined ? [] : schemaNodeNameRegexesToExclude,
+        'custom-scalar-name': replacingCustomScalarName,
     };
 };
 exports.parseCallerPackageJson = parseCallerPackageJson;

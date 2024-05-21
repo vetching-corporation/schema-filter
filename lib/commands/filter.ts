@@ -54,10 +54,10 @@ const dfs = ({ schemaNodeId, depth, verbose = false }: { schemaNodeId: number; d
 }
 
 const findAllReachableSchemaNodeIds = ({ startingSchemaNodeNames }: { startingSchemaNodeNames: String[] }) => {
-  if (startingSchemaNodeNames.includes('Mutation') && configuration['node-name-regexes-to-exclude'].length === 0) {
+  if (startingSchemaNodeNames.includes('Mutation') && configuration['input-type-name-regexes-to-remove'].length === 0) {
     console.log(
       chalk.yellow(
-        '[WARNING] Filter option includes Mutation, however, \'node-name-regexes-to-exclude\' is not provided or empty in package.json.\n',
+        '[WARNING] Filter option includes Mutation, however, \'input-type-name-regexes-to-remove\' is not provided or empty in package.json.\n',
         'This may lead to unexpected stack overflow.'
       )
     )
@@ -127,7 +127,7 @@ export const filter = () => {
     startingSchemaNodeNames,
   })
 
-  const customScalarName = configuration['replacing-custom-scalar-name']
+  const customScalarName = configuration['custom-scalar-name']
 
   /**
    * Output

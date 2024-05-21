@@ -51,8 +51,8 @@ const dfs = ({ schemaNodeId, depth, verbose = false }) => {
     }
 };
 const findAllReachableSchemaNodeIds = ({ startingSchemaNodeNames }) => {
-    if (startingSchemaNodeNames.includes('Mutation') && caller_configuration_parser_1.configuration['node-name-regexes-to-exclude'].length === 0) {
-        console.log(chalk_1.default.yellow('[WARNING] Filter option includes Mutation, however, \'node-name-regexes-to-exclude\' is not provided or empty in package.json.\n', 'This may lead to unexpected stack overflow.'));
+    if (startingSchemaNodeNames.includes('Mutation') && caller_configuration_parser_1.configuration['input-type-name-regexes-to-remove'].length === 0) {
+        console.log(chalk_1.default.yellow('[WARNING] Filter option includes Mutation, however, \'input-type-name-regexes-to-remove\' is not provided or empty in package.json.\n', 'This may lead to unexpected stack overflow.'));
     }
     startingSchemaNodeNames.forEach((startingSchemaNodeName) => {
         dfs({
@@ -103,7 +103,7 @@ const filter = () => {
     const visitedSchemaNodeNames = findAllReachableSchemaNodeIds({
         startingSchemaNodeNames,
     });
-    const customScalarName = caller_configuration_parser_1.configuration['replacing-custom-scalar-name'];
+    const customScalarName = caller_configuration_parser_1.configuration['custom-scalar-name'];
     /**
      * Output
      */

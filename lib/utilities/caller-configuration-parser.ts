@@ -14,8 +14,8 @@ export const parseCallerPackageJson = (packageInfo: any): Configuration => {
   let filters = info['filters']
   let schemaReduced = info['schema-reduced']
   let batchSetting = info['batch-setting']
-  let schemaNodeNameRegexesToExclude = info['node-name-regexes-to-exclude']
-  let replacingCustomScalarName = info['replacing-custom-scalar-name']
+  let schemaNodeNameRegexesToExclude = info['input-type-name-regexes-to-remove']
+  let replacingCustomScalarName = info['custom-scalar-name']
 
   assert(
     schemaOriginal !== undefined,
@@ -64,7 +64,7 @@ export const parseCallerPackageJson = (packageInfo: any): Configuration => {
     console.log(
       chalk.yellow(
         [
-          `"node-name-regexes-to-exclude" field is not provided, so all schema nodes will be included.`,
+          `"input-type-name-regexes-to-remove" field is not provided, so all schema nodes will be included.`,
         ].join('\n'),
       ),
     )
@@ -74,7 +74,7 @@ export const parseCallerPackageJson = (packageInfo: any): Configuration => {
     console.log(
       chalk.yellow(
         [
-          `"node-name-regexes-to-exclude" field is provided, so the schema nodes that include these kind of regex:`,
+          `"input-type-name-regexes-to-remove" field is provided, so the schema nodes that include these kind of regex:`,
           schemaNodeNameRegexesToExclude,
           `will be excluded from the reduced schema.`,
         ].join('\n'),
@@ -83,7 +83,7 @@ export const parseCallerPackageJson = (packageInfo: any): Configuration => {
 
     assert(
       replacingCustomScalarName !== undefined,
-      'Failed to retrieve "replacing-custom-scalar-name"; it is necessary if you provide "node-name-regexes-to-exclude" field.',
+      'Failed to retrieve "custom-scalar-name"; it is necessary if you provide "input-type-name-regexes-to-remove" field.',
     )
   }
 
@@ -103,8 +103,8 @@ export const parseCallerPackageJson = (packageInfo: any): Configuration => {
             mutation: batchSetting['mutation'] === undefined ? true : batchSetting['mutation'],
             subscription: batchSetting['subscription'] === undefined ? true : batchSetting['subscription'],
           },
-    'node-name-regexes-to-exclude': schemaNodeNameRegexesToExclude === undefined ? [] : schemaNodeNameRegexesToExclude,
-    'replacing-custom-scalar-name': replacingCustomScalarName,
+    'input-type-name-regexes-to-remove': schemaNodeNameRegexesToExclude === undefined ? [] : schemaNodeNameRegexesToExclude,
+    'custom-scalar-name': replacingCustomScalarName,
   }
 }
 
