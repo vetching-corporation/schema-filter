@@ -57,8 +57,12 @@ const findAllReachableSchemaNodeIds = ({ startingSchemaNodeNames }) => {
             depth: 0,
         });
     });
-    const visitedAllIds = Array.from(new Set([...visitedIds, ...schemaNodeIdsToExclude]));
-    return new Set(visitedAllIds.map((visitedId) => schemaNodeById.get(visitedId).name));
+    const necessaryVisitedIdSet = visitedIds;
+    schemaNodeIdsToExclude.forEach((idToExclude) => {
+        necessaryVisitedIdSet.delete(idToExclude);
+    });
+    const necessaryVisitedIds = Array.from(necessaryVisitedIdSet);
+    return new Set(necessaryVisitedIds.map((visitedId) => schemaNodeById.get(visitedId).name));
 };
 const filter = () => {
     /* -------------------------------------------------------------------------- */

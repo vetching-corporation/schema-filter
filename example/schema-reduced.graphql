@@ -19,8 +19,6 @@ type Subscription {
   postDeleted(id: ID!): ID!
 }
 
-
-
 type PostIdUpdateDataInput {
   id: ID
 }

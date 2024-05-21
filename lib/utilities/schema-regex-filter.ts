@@ -19,7 +19,9 @@ export const getRegexFilteredSchema = (schemaNodeNamesToExclude: string[], schem
 
   filteredSchema = addCustomScalar(filteredSchema)
 
-  return filterRegex(schemaNodeNamesToExclude, filteredSchema)
+  // return filterRegex(schemaNodeNamesToExclude, filteredSchema)
+
+  return filteredSchema
 }
 
 /* -------------------------------------------------------------------------- */
@@ -51,27 +53,27 @@ const replaceExcludedInputsFromSchema = (schemaNodeNamesToExclude: string[], fil
 
     arrangedSchema = arrangedSchema.replaceAll(`: ${schemaNodeName},`, `: ${customMapScalarName},`)
     arrangedSchema = arrangedSchema.replaceAll(`: ${schemaNodeName}!,`, `: ${customMapScalarName}!,`)
-    arrangedSchema = arrangedSchema.replaceAll(`: ${schemaNodeName})`, `: ${customMapScalarName})`)
-    arrangedSchema = arrangedSchema.replaceAll(`: ${schemaNodeName}!)`, `: ${customMapScalarName}!)`)
+    arrangedSchema = arrangedSchema.replaceAll(`: ${schemaNodeName}):`, `: ${customMapScalarName}):`)
+    arrangedSchema = arrangedSchema.replaceAll(`: ${schemaNodeName}!):`, `: ${customMapScalarName}!):`)
     arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}],`, `: [${customMapScalarName}],`)
     arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}!],`, `: [${customMapScalarName}!],`)
     arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}]!,`, `: [${customMapScalarName}]!,`)
     arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}!]!,`, `: [${customMapScalarName}!]!,`)
-    arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}])`, `: [${customMapScalarName}])`)
-    arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}!])`, `: [${customMapScalarName}!])`)
-    arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}]!)`, `: [${customMapScalarName}]!)`)
-    arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}!]!)`, `: [${customMapScalarName}!]!)`)
+    arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}]):`, `: [${customMapScalarName}]):`)
+    arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}!]):`, `: [${customMapScalarName}!]):`)
+    arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}]!):`, `: [${customMapScalarName}]!):`)
+    arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}!]!):`, `: [${customMapScalarName}!]!):`)
 
     /* -------------------------------------------------------------------------- */
     /*          CASE: Query, Mutation, Subscription Results or input type         */
     /* -------------------------------------------------------------------------- */
 
-    arrangedSchema = arrangedSchema.replaceAll(`: ${schemaNodeName}\n`, `: ${customMapScalarName}\n`)
-    arrangedSchema = arrangedSchema.replaceAll(`: ${schemaNodeName}!\n`, `: ${customMapScalarName}!\n`)
-    arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}]\n`, `: [${customMapScalarName}]\n`)
-    arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}!]\n`, `: [${customMapScalarName}!]\n`)
-    arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}]!\n`, `: [${customMapScalarName}]!\n`)
-    arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}!]!\n`, `: [${customMapScalarName}!]!\n`)
+    // arrangedSchema = arrangedSchema.replaceAll(`: ${schemaNodeName}\n`, `: ${customMapScalarName}\n`)
+    // arrangedSchema = arrangedSchema.replaceAll(`: ${schemaNodeName}!\n`, `: ${customMapScalarName}!\n`)
+    // arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}]\n`, `: [${customMapScalarName}]\n`)
+    // arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}!]\n`, `: [${customMapScalarName}!]\n`)
+    // arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}]!\n`, `: [${customMapScalarName}]!\n`)
+    // arrangedSchema = arrangedSchema.replaceAll(`: [${schemaNodeName}!]!\n`, `: [${customMapScalarName}!]!\n`)
   })
 
   return arrangedSchema

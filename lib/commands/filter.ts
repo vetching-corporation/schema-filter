@@ -67,9 +67,14 @@ const findAllReachableSchemaNodeIds = ({ startingSchemaNodeNames }: { startingSc
     })
   })
 
-  const visitedAllIds = Array.from(new Set([...visitedIds, ...schemaNodeIdsToExclude]))
+  const necessaryVisitedIdSet = visitedIds
+  schemaNodeIdsToExclude.forEach((idToExclude) => {
+    necessaryVisitedIdSet.delete(idToExclude)
+  })
 
-  return new Set<String>(visitedAllIds.map((visitedId) => schemaNodeById.get(visitedId).name))
+  const necessaryVisitedIds = Array.from(necessaryVisitedIdSet)
+
+  return new Set<String>(necessaryVisitedIds.map((visitedId) => schemaNodeById.get(visitedId).name))
 }
 
 export const filter = () => {
