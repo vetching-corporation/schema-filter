@@ -1,13 +1,14 @@
 import assert from 'assert'
 import { readFileSync, writeFileSync } from 'fs'
-import { parse, print as printSchema } from 'graphql'
+import { Kind, parse, print as printSchema } from 'graphql'
 import { filterOnlyVisitedSchema } from '../utilities/ast-filter'
 import { configuration } from '../utilities/caller-configuration-parser'
 import { generateEdges } from '../utilities/edge-generator'
 import { generateNodes, SchemaNode } from '../utilities/node-generator'
 import { filterOperationsToUse } from '../utilities/operation-filter'
-import { checkIfInputToExclude, getRegexFilteredSchema } from '../utilities/schema-regex-filter'
+import { doesNodeNameFitRegex } from '../utilities/regex-filter'
 import chalk from 'chalk'
+import { addCustomScalarType } from '../utilities/ast-util'
 
 // Located here due to stack overflow error due to large schema
 const visitedIds = new Set<number>()
@@ -18,13 +19,19 @@ let schemaNodeIdsToExclude: Set<number> = new Set<number>()
 
 const dfs = ({ schemaNodeId, depth, verbose = false }: { schemaNodeId: number; depth: number; verbose?: boolean }) => {
   visitedIds.add(schemaNodeId)
-  const visitedNodeName = schemaNodeById.get(schemaNodeId).name
+
+  const currentSchemaNode = schemaNodeById.get(schemaNodeId)
+  const visitedNodeName = currentSchemaNode.name
+  const visitedNodeKind = currentSchemaNode.kind
 
   if (verbose) console.log(' '.repeat(depth) + visitedNodeName)
 
-  if (checkIfInputToExclude(visitedNodeName)) {
+  /**
+   * node가 Input Object 타입이고, 사용자가 제외하고자 하는 regex에 걸리는 경우
+   * 제외할 목록(Set)에 넣습니다.
+   * */
+  if (visitedNodeKind === Kind.INPUT_OBJECT_TYPE_DEFINITION && doesNodeNameFitRegex(visitedNodeName)) {
     schemaNodeIdsToExclude.add(schemaNodeId)
-    visitedIds.delete(schemaNodeId)
     return
   }
 
@@ -33,10 +40,7 @@ const dfs = ({ schemaNodeId, depth, verbose = false }: { schemaNodeId: number; d
   assert(children !== undefined, `${visitedNodeName} has no children`)
 
   if (children.size > 0) {
-    schemaNodeIdsToExclude.delete(schemaNodeId)
-
     children.forEach((child) => {
-      schemaNodeIdsToExclude.delete(child)
 
       if (!visitedIds.has(child)) {
         dfs({
@@ -51,10 +55,10 @@ const dfs = ({ schemaNodeId, depth, verbose = false }: { schemaNodeId: number; d
 }
 
 const findAllReachableSchemaNodeIds = ({ startingSchemaNodeNames }: { startingSchemaNodeNames: String[] }) => {
-  if (startingSchemaNodeNames.includes('Mutation') && configuration['node-name-regexes-to-exclude'].length === 0) {
+  if (startingSchemaNodeNames.includes('Mutation') && configuration['input-type-name-regexes-to-remove'].length === 0) {
     console.log(
       chalk.yellow(
-        '[WARNING] Filter option includes Mutation, however, \'node-name-regexes-to-exclude\' is not provided or empty in package.json.\n',
+        '[WARNING] Filter option includes Mutation, however, \'input-type-name-regexes-to-remove\' is not provided or empty in package.json.\n',
         'This may lead to unexpected stack overflow.'
       )
     )
@@ -68,9 +72,14 @@ const findAllReachableSchemaNodeIds = ({ startingSchemaNodeNames }: { startingSc
     })
   })
 
-  const visitedAllIds = Array.from(new Set([...visitedIds, ...schemaNodeIdsToExclude]))
+  const necessaryVisitedIdSet = visitedIds
+  schemaNodeIdsToExclude.forEach((idToExclude) => {
+    necessaryVisitedIdSet.delete(idToExclude)
+  })
 
-  return new Set<String>(visitedAllIds.map((visitedId) => schemaNodeById.get(visitedId).name))
+  const necessaryVisitedIds = Array.from(necessaryVisitedIdSet)
+
+  return new Set<String>(necessaryVisitedIds.map((visitedId) => schemaNodeById.get(visitedId).name))
 }
 
 export const filter = () => {
@@ -119,21 +128,30 @@ export const filter = () => {
     startingSchemaNodeNames,
   })
 
+  const customScalarName = configuration['custom-scalar-name']
 
   /**
    * Output
    */
   console.log('schemaNodesToExclude count =', schemaNodeIdsToExclude.size)
 
-  const schemaNodeNamesToExclude = Array.from(schemaNodeIdsToExclude).map((id) => schemaNodeById.get(id).name)
+  const schemaNodeNamesToExclude = new Set(Array.from(schemaNodeIdsToExclude).map((id) => schemaNodeById.get(id).name))
 
-  const filteredAST = filterOnlyVisitedSchema(operationFilteredAST, visitedSchemaNodeNames)
+  const visitFilteredAST = filterOnlyVisitedSchema({
+    ast: operationFilteredAST,
+    visitedSchemaNodeNames,
+    schemaNodeNamesToExclude,
+    customScalarName,
+  })
 
-  const filteredSchemaString = printSchema(filteredAST)
+  const customScalarAddedAST = addCustomScalarType({
+    ast: visitFilteredAST,
+    customScalarName,
+  })
 
-  const filteredSchema = getRegexFilteredSchema(schemaNodeNamesToExclude, filteredSchemaString)
+  const filteredSchemaString = printSchema(customScalarAddedAST)
 
   const reducedSchemaPath = configuration['schema-reduced']
 
-  writeFileSync(reducedSchemaPath, filteredSchema)
+  writeFileSync(reducedSchemaPath, filteredSchemaString)
 }

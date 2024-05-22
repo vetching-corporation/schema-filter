@@ -3,6 +3,7 @@ import { DocumentNode, Kind } from 'graphql'
 export type SchemaNode = {
   id: number
   name: string
+  kind: Kind
 }
 
 /// Traverse AST and generate nodes
@@ -47,10 +48,12 @@ export const generateNodes = (
 
     const id = index + 1
     const name = definitionNode.name.value
+    const kind = definitionNode.kind
 
     schemaNodeById.set(id, {
       id,
       name,
+      kind,
     })
 
     schemaNodeIdByName.set(name, id)

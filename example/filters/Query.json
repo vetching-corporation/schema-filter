@@ -6,5 +6,9 @@
   {
     "inUse": false,
     "name": "getAllPosts"
+  },
+  {
+    "inUse": true,
+    "name": "getPostId"
   }
 ]

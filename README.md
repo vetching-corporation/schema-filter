@@ -139,12 +139,12 @@ npx schema-filter --help
    
        // If you need to exclude some input types by name, you can set Regular Expressions.
        // With the given example, you may exclude input types such as "PostUpdateDataInput".
-       "node-name-regexes-to-exclude": ["\\b\\w+(Update)\\w+(Input)\\b"],
+       "input-type-name-regexes-to-remove": ["\\b\\w+(Update)\\w+(Input)\\b"],
    
        // The excluded input type nodes will be replaced with the custom scalar type,
        // and its name could be set here.
-       // If you provide "node-name-regexes-to-exclude", you should provide this field as well.
-       "replacing-custom-scalar-name": "CustomScalarName"
+       // If you provide "input-type-name-regexes-to-remove", you should provide this field as well.
+       "custom-scalar-name": "CustomScalarName"
     }
     ```
 
@@ -177,16 +177,16 @@ npx schema-filter --help
 
     <br>
 
-    [5] `node-name-regexes-to-exclude` : **Regular-Expression-like string values array** to exclude some input types by name
+    [5] `input-type-name-regexes-to-remove` : **Regular-Expression-like string values array** to exclude some input types by name
     - If you need to exclude some input types by name, you can set Regular Expressions.
-    - If you provide this field, you should provide `replacing-custom-scalar-name` as well.
+    - If you provide this field, you should provide `custom-scalar-name` as well.
 
     <br>
 
-    [6] `replacing-custom-scalar-name` : **Custom scalar type name** to replace excluded input types
+    [6] `custom-scalar-name` : **Custom scalar type name** to replace excluded input types
     - The excluded input type nodes will be replaced with the custom scalar type,
     - and its name could be set here.
-    - If you provide `node-name-regexes-to-exclude`, you should provide this field as well.
+    - If you provide `input-type-name-regexes-to-remove`, you should provide this field as well.
 
 3. Initialize/Update filters
 

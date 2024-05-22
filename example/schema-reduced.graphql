@@ -6,18 +6,28 @@ type Post {
 
 type Query {
   getPost(id: ID!): Post
+  getPostId(id: ID!): PostIdUpdateDataInput
 }
 
 type Mutation {
   createPost(title: String!, content: String!): Post!
   deletePost(id: ID!): ID!
   updatePostWithInput(id: ID!, data: CustomScalarName): Post
+  createPostWithInput(data: PostCreateDataInput): Post
 }
 
 type Subscription {
   postDeleted(id: ID!): ID!
 }
 
+input PostCreateDataInput {
+  email: String
+  shouldNotify: Boolean!
+  nestedInput: CustomScalarName
+}
 
+type PostIdUpdateDataInput {
+  id: ID
+}
 
 scalar CustomScalarName

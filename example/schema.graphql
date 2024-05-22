@@ -7,6 +7,7 @@ type Post {
 type Query {
   getPost(id: ID!): Post
   getAllPosts: [Post!]!
+  getPostId(id: ID!): PostIdUpdateDataInput
 }
 
 type Mutation {
@@ -14,6 +15,7 @@ type Mutation {
   updatePost(id: ID!, title: String, content: String): Post!
   deletePost(id: ID!): ID!
   updatePostWithInput(id: ID!, data: PostUpdateDataInput): Post
+  createPostWithInput(data: PostCreateDataInput): Post
 }
 
 type Subscription {
@@ -26,4 +28,19 @@ input PostUpdateDataInput {
   id: ID
   title: String
   content: String
+}
+
+input PostCreateDataInput {
+  email: String
+  shouldNotify: Boolean!
+  nestedInput: PostUpdateNestedDataInput
+}
+
+input PostUpdateNestedDataInput {
+  email: String
+  shouldNotify: Boolean!
+}
+
+type PostIdUpdateDataInput {
+  id: ID
 }
