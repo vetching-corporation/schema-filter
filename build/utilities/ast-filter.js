@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addCustomScalarType = exports.filterOnlyVisitedSchema = void 0;
+exports.filterOnlyVisitedSchema = void 0;
 const graphql_1 = require("graphql");
 const filterOnlyVisitedSchema = ({ ast, visitedSchemaNodeNames, schemaNodeNamesToExclude, customScalarName, }) => {
     return (0, graphql_1.visit)(ast, {
@@ -44,24 +44,3 @@ const filterOnlyVisitedSchema = ({ ast, visitedSchemaNodeNames, schemaNodeNamesT
     });
 };
 exports.filterOnlyVisitedSchema = filterOnlyVisitedSchema;
-/**
- * 스키마에 custom scalar type을 추가합니다.
- * */
-const addCustomScalarType = ({ ast, customScalarName }) => {
-    if (!customScalarName) {
-        return ast;
-    }
-    const scalarTypeDefinitionNode = {
-        kind: graphql_1.Kind.SCALAR_TYPE_DEFINITION,
-        name: {
-            kind: graphql_1.Kind.NAME,
-            value: customScalarName,
-        },
-    };
-    const newAstDefinitions = [...ast.definitions, scalarTypeDefinitionNode];
-    return {
-        ...ast,
-        definitions: newAstDefinitions,
-    };
-};
-exports.addCustomScalarType = addCustomScalarType;

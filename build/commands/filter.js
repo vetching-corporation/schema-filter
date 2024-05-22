@@ -14,6 +14,7 @@ const node_generator_1 = require("../utilities/node-generator");
 const operation_filter_1 = require("../utilities/operation-filter");
 const regex_filter_1 = require("../utilities/regex-filter");
 const chalk_1 = __importDefault(require("chalk"));
+const ast_util_1 = require("../utilities/ast-util");
 // Located here due to stack overflow error due to large schema
 const visitedIds = new Set();
 let edges = new Map();
@@ -115,7 +116,7 @@ const filter = () => {
         schemaNodeNamesToExclude,
         customScalarName,
     });
-    const customScalarAddedAST = (0, ast_filter_1.addCustomScalarType)({
+    const customScalarAddedAST = (0, ast_util_1.addCustomScalarType)({
         ast: visitFilteredAST,
         customScalarName,
     });

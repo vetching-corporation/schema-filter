@@ -1,13 +1,14 @@
 import assert from 'assert'
 import { readFileSync, writeFileSync } from 'fs'
 import { Kind, parse, print as printSchema } from 'graphql'
-import { addCustomScalarType, filterOnlyVisitedSchema } from '../utilities/ast-filter'
+import { filterOnlyVisitedSchema } from '../utilities/ast-filter'
 import { configuration } from '../utilities/caller-configuration-parser'
 import { generateEdges } from '../utilities/edge-generator'
 import { generateNodes, SchemaNode } from '../utilities/node-generator'
 import { filterOperationsToUse } from '../utilities/operation-filter'
 import { doesNodeNameFitRegex } from '../utilities/regex-filter'
 import chalk from 'chalk'
+import { addCustomScalarType } from '../utilities/ast-util'
 
 // Located here due to stack overflow error due to large schema
 const visitedIds = new Set<number>()
