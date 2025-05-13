@@ -10,9 +10,15 @@ const filterOnlyVisitedSchema = ({ ast, visitedSchemaNodeNames, schemaNodeNamesT
         enter(node) {
             if (!(node.kind === graphql_1.Kind.DIRECTIVE_DEFINITION ||
                 node.kind === graphql_1.Kind.SCALAR_TYPE_DEFINITION ||
-                node.kind === graphql_1.Kind.ENUM_TYPE_DEFINITION ||
                 node.kind === graphql_1.Kind.OBJECT_TYPE_DEFINITION ||
                 node.kind === graphql_1.Kind.INPUT_OBJECT_TYPE_DEFINITION)) {
+                return node;
+            }
+            /**
+             * interface를 implement하는 type이라면, API에서 방문하지 않을 수 있습니다.
+             * 따라서 강제로 추가해 줍니다.
+             */
+            if (node.kind == graphql_1.Kind.OBJECT_TYPE_DEFINITION && node.interfaces.length > 0) {
                 return node;
             }
             const { name: { value: name }, } = node;
