@@ -1,6 +1,6 @@
 {
   "name": "schema-filter",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "given schema, this package extracts all available queries, mutations, subscriptions and then make list of those to determine whether to use each graphql operation, by using that filters, reduced-schema is generated",
   "repository": {
     "type": "git",
