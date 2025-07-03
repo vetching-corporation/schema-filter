@@ -65,6 +65,16 @@ const findAllReachableSchemaNodeIds = ({ startingSchemaNodeNames }: { startingSc
   }
 
   startingSchemaNodeNames.forEach((startingSchemaNodeName) => {
+    if (!schemaNodeIdByName.has(startingSchemaNodeName)) {
+      console.log(
+        chalk.yellow(
+          '[WARNING] No "' + startingSchemaNodeName + '" found in schema. Skipping traversal for this node.\n',
+        )
+      )
+
+      return
+    }
+
     dfs({
       //
       schemaNodeId: schemaNodeIdByName.get(startingSchemaNodeName),

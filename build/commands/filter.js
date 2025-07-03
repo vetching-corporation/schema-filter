@@ -56,6 +56,10 @@ const findAllReachableSchemaNodeIds = ({ startingSchemaNodeNames }) => {
         console.log(chalk_1.default.yellow('[WARNING] Filter option includes Mutation, however, \'input-type-name-regexes-to-remove\' is not provided or empty in package.json.\n', 'This may lead to unexpected stack overflow.'));
     }
     startingSchemaNodeNames.forEach((startingSchemaNodeName) => {
+        if (!schemaNodeIdByName.has(startingSchemaNodeName)) {
+            console.log(chalk_1.default.yellow('[WARNING] No "' + startingSchemaNodeName + '" found in schema. Skipping traversal for this node.\n'));
+            return;
+        }
         dfs({
             //
             schemaNodeId: schemaNodeIdByName.get(startingSchemaNodeName),
