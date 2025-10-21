@@ -8,6 +8,7 @@ type Query {
   getPost(id: ID!): Post
   getAllPosts: [Post!]!
   getPostId(id: ID!): PostIdUpdateDataInput
+  getPostUnion(id: ID!): PostUnion
 }
 
 type Mutation {
@@ -44,3 +45,18 @@ input PostUpdateNestedDataInput {
 type PostIdUpdateDataInput {
   id: ID
 }
+
+type PostUnionA {
+  idA: ID
+  creditA: Int!
+  addressA: Float!
+}
+
+type PostUnionB {
+  idB: ID
+  creditB: String!
+  addressB: String!
+}
+
+union PostUnion = PostUnionA | PostUnionB
+

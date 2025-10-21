@@ -7,6 +7,7 @@ type Post {
 type Query {
   getPost(id: ID!): Post
   getPostId(id: ID!): PostIdUpdateDataInput
+  getPostUnion(id: ID!): PostUnion
 }
 
 type Mutation {
@@ -29,5 +30,19 @@ input PostCreateDataInput {
 type PostIdUpdateDataInput {
   id: ID
 }
+
+type PostUnionA {
+  idA: ID
+  creditA: Int!
+  addressA: Float!
+}
+
+type PostUnionB {
+  idB: ID
+  creditB: String!
+  addressB: String!
+}
+
+union PostUnion = PostUnionA | PostUnionB
 
 scalar CustomScalarName
