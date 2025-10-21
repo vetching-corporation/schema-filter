@@ -3,15 +3,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.filterOnlyVisitedSchema = void 0;
 const graphql_1 = require("graphql");
 const filterOnlyVisitedSchema = ({ ast, visitedSchemaNodeNames, schemaNodeNamesToExclude, customScalarName, }) => {
-    console.log('[PPPP] visitedSchemaNodeNames', visitedSchemaNodeNames);
-    const unionNodes = ast.definitions.filter(def => def.kind === graphql_1.Kind.UNION_TYPE_DEFINITION);
-    console.log('[PPPP] unionNodes found in AST:', unionNodes);
-    for (const unionNode of unionNodes) {
+    /**
+     * union 타입에 속하는 타입은 dfs()에서 방문할 수 없습니다.
+     * 따라서 강제로 추가해 줍니다.
+     */
+    const unionTypeDefinitionNodes = ast.definitions.filter(def => def.kind === graphql_1.Kind.UNION_TYPE_DEFINITION);
+    for (const unionNode of unionTypeDefinitionNodes) {
         if (unionNode.kind === graphql_1.Kind.UNION_TYPE_DEFINITION && unionNode.types) {
-            console.log('[PPPP] Processing unionNode:', unionNode);
+            // union에 속하는 타입들
             for (const typeNode of unionNode.types) {
                 visitedSchemaNodeNames.add(typeNode.name.value);
-                console.log('[PPPP] Added to visitedSchemaNodeNames from union:', typeNode.name.value);
             }
         }
     }
@@ -20,23 +21,6 @@ const filterOnlyVisitedSchema = ({ ast, visitedSchemaNodeNames, schemaNodeNamesT
          * 방문한 기록이 있는 node만 남깁니다.
          * */
         enter(node) {
-            // console.log('visitedSchemaNodeNames', visitedSchemaNodeNames)
-            // if (node.kind === Kind.OBJECT_TYPE_DEFINITION && node.name.value.includes('Union')) {
-            //   console.log('[PPPP] Union type found:', node);
-            // }
-            // if (node.kind === Kind.UNION_TYPE_DEFINITION && node.types) {
-            //   console.log('[PPPP] Union type found:', node);
-            // }
-            // if (node.kind === Kind.UNION_TYPE_DEFINITION && node.types) {
-            //   // node.types는 [{ kind: 'NamedType', name: { value: 'SomeType' } }, ...]
-            //   for (const typeNode of node.types) {
-            //     visitedSchemaNodeNames.add(typeNode.name.value)
-            //   }
-            //
-            //   console.log('[PPPP] Union type processed, added types to visitedSchemaNodeNames:', node.types.map(t => t.name.value));
-            //   // union 타입은 무조건 남긴다
-            //   return node;
-            // }
             if (!(node.kind === graphql_1.Kind.DIRECTIVE_DEFINITION ||
                 node.kind === graphql_1.Kind.SCALAR_TYPE_DEFINITION ||
                 node.kind === graphql_1.Kind.OBJECT_TYPE_DEFINITION ||
