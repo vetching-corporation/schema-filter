@@ -3,19 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.filterOnlyVisitedSchema = void 0;
 const graphql_1 = require("graphql");
 const filterOnlyVisitedSchema = ({ ast, visitedSchemaNodeNames, schemaNodeNamesToExclude, customScalarName, }) => {
-    /**
-     * union 타입에 속하는 타입은 dfs()에서 방문할 수 없습니다.
-     * 따라서 강제로 추가해 줍니다.
-     */
-    const unionTypeDefinitionNodes = ast.definitions.filter(def => def.kind === graphql_1.Kind.UNION_TYPE_DEFINITION);
-    for (const unionNode of unionTypeDefinitionNodes) {
-        if (unionNode.kind === graphql_1.Kind.UNION_TYPE_DEFINITION && unionNode.types) {
-            // union에 속하는 타입들
-            for (const typeNode of unionNode.types) {
-                visitedSchemaNodeNames.add(typeNode.name.value);
-            }
-        }
-    }
     return (0, graphql_1.visit)(ast, {
         /**
          * 방문한 기록이 있는 node만 남깁니다.
@@ -59,7 +46,7 @@ const filterOnlyVisitedSchema = ({ ast, visitedSchemaNodeNames, schemaNodeNamesT
                 };
             }
             return node;
-        }
+        },
     });
 };
 exports.filterOnlyVisitedSchema = filterOnlyVisitedSchema;

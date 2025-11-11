@@ -22,7 +22,9 @@ const generateNodes = (ast) => {
             definitionNode.kind === graphql_1.Kind.OBJECT_TYPE_DEFINITION ||
             definitionNode.kind === graphql_1.Kind.INPUT_OBJECT_TYPE_DEFINITION ||
             definitionNode.kind === graphql_1.Kind.SCALAR_TYPE_DEFINITION ||
-            definitionNode.kind === graphql_1.Kind.ENUM_TYPE_DEFINITION)) {
+            definitionNode.kind === graphql_1.Kind.ENUM_TYPE_DEFINITION ||
+            definitionNode.kind === graphql_1.Kind.INTERFACE_TYPE_DEFINITION ||
+            definitionNode.kind === graphql_1.Kind.UNION_TYPE_DEFINITION)) {
             console.log('another definitionNode type detected');
             continue;
         }

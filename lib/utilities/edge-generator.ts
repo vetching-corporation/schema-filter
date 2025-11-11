@@ -107,7 +107,9 @@ export const generateEdges = ({
         definitionNode.kind === Kind.OBJECT_TYPE_DEFINITION ||
         definitionNode.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION ||
         definitionNode.kind === Kind.SCALAR_TYPE_DEFINITION ||
-        definitionNode.kind === Kind.ENUM_TYPE_DEFINITION
+        definitionNode.kind === Kind.ENUM_TYPE_DEFINITION ||
+        definitionNode.kind === Kind.INTERFACE_TYPE_DEFINITION ||
+        definitionNode.kind === Kind.UNION_TYPE_DEFINITION
       )
     )
       continue
@@ -123,6 +125,56 @@ export const generateEdges = ({
       case Kind.SCALAR_TYPE_DEFINITION:
       case Kind.ENUM_TYPE_DEFINITION:
         continue
+      case Kind.INTERFACE_TYPE_DEFINITION: {
+        const { fields } = definitionNode
+
+        if (fields === undefined) {
+          console.log(`${name} has not fields`)
+          continue
+        }
+
+        // Interface의 필드에서 사용하는 타입들에 대한 edge 생성
+        const relatedNodeIds = getTypeSchemaNodeRelatedSchemaNodeIds({
+          parentNodeName: name,
+          fields: Array.from(fields),
+          schemaNodeIdByName,
+        })
+
+        relatedNodeIds.forEach((relatedNodeId) => edges.get(id)?.add(relatedNodeId))
+
+        // Interface를 구현하는 Object 타입들에 대한 edge 생성
+        const implementingTypes = ast.definitions.filter(
+          (def) =>
+            def.kind === Kind.OBJECT_TYPE_DEFINITION && def.interfaces?.some((iface) => iface.name.value === name),
+        )
+
+        implementingTypes.forEach((implType) => {
+          if (implType.kind === Kind.OBJECT_TYPE_DEFINITION) {
+            const implTypeId = schemaNodeIdByName.get(implType.name.value)
+            if (implTypeId !== undefined) {
+              edges.get(id)?.add(implTypeId)
+            }
+          }
+        })
+        break
+      }
+      case Kind.UNION_TYPE_DEFINITION: {
+        const { types } = definitionNode
+
+        if (types === undefined || types.length === 0) {
+          console.log(`${name} has no types`)
+          continue
+        }
+
+        // Union에 포함된 Object 타입들에 대한 edge 생성
+        types.forEach((typeNode) => {
+          const typeId = schemaNodeIdByName.get(typeNode.name.value)
+          if (typeId !== undefined) {
+            edges.get(id)?.add(typeId)
+          }
+        })
+        break
+      }
       case Kind.OBJECT_TYPE_DEFINITION: {
         const { fields } = definitionNode
 
