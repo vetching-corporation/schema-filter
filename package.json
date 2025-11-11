@@ -28,7 +28,9 @@
   "main": "build/index.js",
   "schema-filter": {
     "schema-original": "example/schema.graphql",
-    "input-type-name-regexes-to-remove": ["\\b\\w+(Update)\\w+(Input)\\b"],
+    "input-type-name-regexes-to-remove": [
+      "\\b\\w+(Update)\\w+(Input)\\b"
+    ],
     "custom-scalar-name": "CustomScalarName"
   },
   "scripts": {
