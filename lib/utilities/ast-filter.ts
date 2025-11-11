@@ -6,27 +6,11 @@ export const filterOnlyVisitedSchema = ({
   schemaNodeNamesToExclude,
   customScalarName,
 }: {
-  ast: DocumentNode,
-  visitedSchemaNodeNames: Set<String>,
-  schemaNodeNamesToExclude ? : Set<String>,
-  customScalarName ? : string
+  ast: DocumentNode
+  visitedSchemaNodeNames: Set<String>
+  schemaNodeNamesToExclude?: Set<String>
+  customScalarName?: string
 }) => {
-  /**
-   * union 타입에 속하는 타입은 dfs()에서 방문할 수 없습니다.
-   * 따라서 강제로 추가해 줍니다.
-   */
-  const unionTypeDefinitionNodes =
-    ast.definitions.filter(def => def.kind === Kind.UNION_TYPE_DEFINITION);
-
-  for (const unionNode of unionTypeDefinitionNodes) {
-    if (unionNode.kind === Kind.UNION_TYPE_DEFINITION && unionNode.types) {
-      // union에 속하는 타입들
-      for (const typeNode of unionNode.types) {
-        visitedSchemaNodeNames.add(typeNode.name.value)
-      }
-    }
-  }
-
   return visit(ast, {
     /**
      * 방문한 기록이 있는 node만 남깁니다.
@@ -40,7 +24,7 @@ export const filterOnlyVisitedSchema = ({
           node.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION
         )
       ) {
-        return node;
+        return node
       }
 
       /**
@@ -48,28 +32,28 @@ export const filterOnlyVisitedSchema = ({
        * 따라서 강제로 추가해 줍니다.
        */
       if (node.kind == Kind.OBJECT_TYPE_DEFINITION && node.interfaces.length > 0) {
-        return node;
+        return node
       }
 
       const {
         name: { value: name },
-      } = node;
+      } = node
 
-      if (!visitedSchemaNodeNames.has(name)) return null;
+      if (!visitedSchemaNodeNames.has(name)) return null
 
-      return node;
+      return node
     },
     /**
      * 제외해야 하는 node를 custom scalar로 바꾸어 줍니다.
      * */
-    NamedType (node) {
+    NamedType(node) {
       if (
         !schemaNodeNamesToExclude ||
         !customScalarName ||
         schemaNodeNamesToExclude.size === 0 ||
         customScalarName.length === 0
       ) {
-        return node;
+        return node
       }
 
       if (schemaNodeNamesToExclude.has(node.name.value)) {
@@ -79,9 +63,9 @@ export const filterOnlyVisitedSchema = ({
             ...node.name,
             value: customScalarName,
           },
-        };
+        }
       }
-      return node;
-    }
-  });
-};
+      return node
+    },
+  })
+}

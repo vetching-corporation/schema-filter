@@ -38,7 +38,9 @@ export const generateNodes = (
         definitionNode.kind === Kind.OBJECT_TYPE_DEFINITION ||
         definitionNode.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION ||
         definitionNode.kind === Kind.SCALAR_TYPE_DEFINITION ||
-        definitionNode.kind === Kind.ENUM_TYPE_DEFINITION
+        definitionNode.kind === Kind.ENUM_TYPE_DEFINITION ||
+        definitionNode.kind === Kind.INTERFACE_TYPE_DEFINITION ||
+        definitionNode.kind === Kind.UNION_TYPE_DEFINITION
       )
     ) {
       console.log('another definitionNode type detected')
